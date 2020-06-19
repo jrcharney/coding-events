@@ -1,27 +1,36 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="https://www.thymeleaf.org/">
-<head>
-    <meta charset="UTF-8"/>
-    <title>Coding Events</title>
-    <link rel="stylesheet" href="css/styles.css">
-</head>
-<body>
+<head th:replace="fragments :: head"></head>
+<body class="container">
 
-<header>
-    <h1>Coding Events</h1>
-</header>
-<nav>
-    <ul>
-        <li><b>All Events</b></li>
-    </ul>
-</nav>
+<header th:replace="fragments :: header"></header>
+<nav th:replace="fragments :: nav"></nav>
+
 <main>
 
+    <p th:unless="${events} and ${events.size()}">Sorry, There are no events scheduled. Why don't you <a href="events/create">create</a> one?</p>
+
+    <!--
     <ul>
         <th:block th:each="event : ${events}">
             <li th:text="${event}"></li>
         </th:block>
     </ul>
+    -->
+
+    <!-- TODO: do a th:if on our table -->
+    <table th:if="${events.size() > 0}" class="table table-striped">
+        <thead>
+            <tr>
+                <th>Name</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="event : ${events}">
+                <td th:text="${event}"></td>
+            </tr>
+        </tbody>
+    </table>
 
 </main>
 
