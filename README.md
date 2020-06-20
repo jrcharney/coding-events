@@ -4,3 +4,5 @@
 > It could have practical applications though.
 
 Turns out I didn't commit after each subchapter so I can't do the exercise here. So there is no `my-exercise-solution` branch.
+
+Starting in Chapter 12, a new branch `create-model` is used for this project with Models.
