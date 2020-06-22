@@ -34,6 +34,25 @@ public class EventController {
         return "redirect:";
     }
 
+    @GetMapping("edit/{eventId}")
+    public String renderEditForm(Model model, @PathVariable int eventId){
+        Event event = EventData.getById(eventId);
+        model.addAttribute("title","Edit Event '" + event.getName() + "' (id="+ event.getId() +")");
+        model.addAttribute(event);
+        return "events/edit";
+    }
+
+    @PostMapping("edit")
+    public String processEditEvent(int eventId, String name, String description){
+        Event event = EventData.getById(eventId);
+        event.setName(name);
+        event.setDescription(description);
+        // This should keep the event ID number
+        EventData.remove(eventId);
+        EventData.add(event);
+        return "redirect:";
+    }
+
     @GetMapping("delete")
     public String renderDeleteEventForm(Model model){
         model.addAttribute("title","Delete Events");
