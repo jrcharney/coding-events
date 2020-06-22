@@ -8,14 +8,18 @@
     <main>
 
         <form method="post" action="/events/create">
-            <!-- bootstrap uses form-group. We could have used a fieldset element, but fieldsets require a legend element, so using a div would be better here. -->
             <div class="form-group">
-                <label>Event Name <!-- TODO: does bootstrap have a class for labels? Probably, but it wasn't mentioned. -->
+                <label>Name
                     <input type="text" name="eventName" value="" class="form-control" />
-                </label><!-- Let's wrap our input in the label instead of having it be outside. It WILL make the input field width shorter and look better. -->
+                </label>
             </div>
             <div class="form-group">
-                <input type="submit" value="Create Event" class="btn btn-success" />
+                <label>Description
+                    <input type="text" name="eventDescription" value="" class="form-control" />
+                </label>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-success" />
             </div>
         </form>
 

@@ -1,5 +1,6 @@
 package org.launchcode.codingevents.controllers;
 
+import org.launchcode.codingevents.models.Event;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,7 +17,7 @@ public class EventController {
 
     // If you put the datatypes in your List<> on the left side,
     // you don't need to use them on the right side in the constructor.
-    private static List<String> events = new ArrayList<>();
+    private static List<Event> events = new ArrayList<>();
 
     @GetMapping
     public String displayAllEvents(Model model){
@@ -42,10 +43,13 @@ public class EventController {
     }
 
     @PostMapping("create")
-    public String createEvent(@RequestParam String eventName){
+    public String createEvent(
+            @RequestParam String eventName,
+            @RequestParam String eventDescription
+    ){
         // Note: The name of the RequestParam in our needs to be the same as the name in our form input.
         // So if we have an input named eventName, we should use a RequestParam called eventName.
-        events.add(eventName);  // events will get a new event after each time the form is processed.
+        events.add(new Event(eventName,eventDescription));  // events will get a new event after each time the form is processed.
         //return "redirect:/events";    // Implied.
         return "redirect:";
     }
