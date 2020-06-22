@@ -15,14 +15,15 @@
 <!-- If you are using bootstrap, every body needs a container class. -->
 
 <header th:fragment="header">
-    <h1>Coding Events</h1>
+    <h1 th:text="${title}">Coding Events</h1>
 </header>
 
 <!-- FYI: These nav and nav-item classes are bootstrap classes. -->
 <nav th:fragment="nav">
     <ul class="nav">
-        <li class="nav-item"><a class="nav-link" href="/events">All Events</a></li>
-        <li class="nav-item"><a class="nav-link" href="/events/create">Create Event</a></li>
+        <li class="nav-item"><a class="nav-link" href="/events" title="List All Events">List All</a></li>
+        <li class="nav-item"><a class="nav-link" href="/events/create" title="Create Event">+ Add</a></li>
+        <li class="nav-item"><a class="nav-link" href="/events/delete" title="Delete Events">&times; Remove</a></li>
     </ul>
 </nav>
 

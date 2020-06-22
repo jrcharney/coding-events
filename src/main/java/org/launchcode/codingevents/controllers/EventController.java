@@ -1,5 +1,6 @@
 package org.launchcode.codingevents.controllers;
 
+import org.launchcode.codingevents.data.EventData;
 import org.launchcode.codingevents.models.Event;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,42 +16,48 @@ import java.util.List;
 @RequestMapping("events")
 public class EventController {
 
-    // If you put the datatypes in your List<> on the left side,
-    // you don't need to use them on the right side in the constructor.
-    private static List<Event> events = new ArrayList<>();
-
     @GetMapping
     public String displayAllEvents(Model model){
-        /*
-        events.add("Strange Loop");
-        events.add("LaunchCode LC101");
-        events.add("Code with Pride");
-        events.add("Code Until Dawn");  // or is it Code Till Dawn?
-        events.add("Venture Cafe");
-        events.add("OpenSTL");
-        events.add("Global Game Jam");
-        events.add("Raspberry Pi Jam");
-
-         */
-        model.addAttribute("events",events);
+        model.addAttribute("title","All Events");
+        model.addAttribute("events", EventData.getAll());
         return "events/index";  // You don't need to add file extensions when specifying template names.
     }
 
     // create lives at /events, like everything else in this controller
     @GetMapping("create")
-    public String renderCreateEventForm(){
+    public String renderCreateEventForm(Model model){
+        model.addAttribute("title","Create Event");
         return "events/create";
     }
 
     @PostMapping("create")
-    public String createEvent(
+    public String processCreateEvent(
             @RequestParam String eventName,
             @RequestParam String eventDescription
     ){
         // Note: The name of the RequestParam in our needs to be the same as the name in our form input.
         // So if we have an input named eventName, we should use a RequestParam called eventName.
-        events.add(new Event(eventName,eventDescription));  // events will get a new event after each time the form is processed.
+        EventData.add(new Event(eventName,eventDescription));
         //return "redirect:/events";    // Implied.
+        return "redirect:";
+    }
+
+    @GetMapping("delete")
+    public String renderDeleteEventForm(Model model){
+        model.addAttribute("title","Delete Events");
+        model.addAttribute("events",EventData.getAll());
+        return "events/delete";
+    }
+
+    // Here we add "required = false" to the RequestParam in case there are no events.
+    // If we don't do that. We get a Whitelabel Error.
+    @PostMapping("delete")
+    public String processDeleteEvents(@RequestParam(required = false) int[] eventIds){
+        if(eventIds != null) {
+            for (int id : eventIds) {
+                EventData.remove(id);
+            }
+        }
         return "redirect:";
     }
 }

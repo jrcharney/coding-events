@@ -8,7 +8,7 @@
 
 <main>
 
-    <p th:unless="${events} and ${events.size()}">Sorry, There are no events scheduled. Why don't you <a href="events/create">create</a> one?</p>
+    <p th:unless="${events} and ${events.size()}">There are no events scheduled. Why don't you <a href="events/create">create</a> one?</p>
 
     <!--
     <ul>
@@ -22,14 +22,14 @@
     <table th:if="${events.size() > 0}" class="table table-striped">
         <thead>
             <tr>
-                <!--<th>ID</th>-->
+                <th>ID</th>
                 <th>Name</th>
                 <th>Description</th>
             </tr>
         </thead>
         <tbody>
             <tr th:each="event : ${events}">
-                <!--<td th:text="${event.id}"></td>-->
+                <td th:text="${event.id}"></td>
                 <td th:text="${event.name}"></td>
                 <td th:text="${event.description}"></td>
             </tr>
