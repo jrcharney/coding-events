@@ -9,13 +9,16 @@
     <form method="post">
         <th:block th:each="event : ${events}">
             <div class="form-group">
+                <!-- We need to have text in the label or the checkbox won't appear. -->
                 <label>
+                    <input type="checkbox" name="eventIds" th:value="${event.id}" class="form-check-input"/>
                     <span th:text="${event.name}"></span>
-                    <input type="checkbox" name="eventIds" th:value="${event.id}" class="form-control"/>
                 </label>
             </div>
         </th:block>
+        <!-- TODO: Confirm if you want to do this. -->
         <input type="submit" value="Delete" class="btn btn-danger"/>
+        <!-- TODO: Cancel button -->
     </form>
 </main>
 </body>

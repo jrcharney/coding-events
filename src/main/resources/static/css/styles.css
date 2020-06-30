@@ -33,3 +33,12 @@ a[href]:active {
 a[href]:hover {
     color: #fcf;
 }
+
+.error {
+    color: red;
+}
+
+/* Fix our color for dark backgrounds */
+.table {
+    color: #fff;
+}

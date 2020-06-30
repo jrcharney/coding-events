@@ -8,15 +8,31 @@
     <main>
 
         <form method="post" action="/events/create">
+            <!-- NOTE: thymeleaf's field attribute will generate id, type, name, and value input attributes -->
             <div class="form-group">
                 <label>Name
-                    <input type="text" name="name" value="" class="form-control" />
+                    <input th:field="${event.name}" class="form-control" />
                 </label>
+                <span class="error" th:errors="${event.name}"></span>
             </div>
             <div class="form-group">
                 <label>Description
-                    <input type="text" name="description" value="" class="form-control" />
+                    <input th:field="${event.description}" class="form-control" />
                 </label>
+                <span class="error" th:errors="${event.description}"></span>
+            </div>
+            <!-- Why not try type="email"? ThymeLeaf should do that for us. -->
+            <div class="form-group">
+                <label>Contact Email
+                    <input th:field="${event.contactEmail}" class="form-control" />
+                </label>
+                <span class="error" th:errors="${event.contactEmail}"></span>
+            </div>
+            <div class="form-group">
+                <label>Type</label>
+                <select th:field="${event.type}">
+                    <option th:each="type : ${types}" th:value="${type}" th:text="${type.displayName}"></option>
+                </select>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-success" />
