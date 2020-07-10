@@ -12,27 +12,22 @@ import java.util.Objects;
 // What happens here?
 // Hibernate will scan this entity object and create a table in MySQL called 'coding_events'.'event'.
 @Entity
-public class Event {
-    @Id                 // NOTE: Use the javax.persistence.Id annotation!
-    @GeneratedValue
-    private int id;
-    /* private static int nextId = 1; */
+public class Event extends AbstractEntity {
 
     @NotBlank(message = "Name is required.")
-    @Size(min=3, max=50, message = "Name must be between 3 and 50 characters.")
+    @Size(min = 3, max = 50, message = "Name must be between 3 and 50 characters.")
     private String name;
 
-    @Size(max=500, message="Description too long!")
+    @Size(max = 500, message = "Description too long!")
     private String description;
 
     @NotBlank(message = "Email is required.")
-    @Email(message="Invalid email. Try again.")
+    @Email(message = "Invalid email. Try again.")
     private String contactEmail;
 
     private EventType type;
 
-    public Event(){
-        /* this.id = nextId++; // This will combine this.id = nextId; and nextId++;. */
+    public Event() {
     }
 
     public Event(String name, String description, String contactEmail, EventType type) {
@@ -41,7 +36,6 @@ public class Event {
         this.description = description;
         this.contactEmail = contactEmail;
         this.type = type;
-        /* this.id = nextId++; // This will combine this.id = nextId; and nextId++;. */
     }
 
     public String getName() {
@@ -76,31 +70,7 @@ public class Event {
         this.type = type;
     }
 
-    public int getId() {
-        return id;
-    }
-
     @Override
-    public String toString() {
-        return name;
-        /*"Event{" +
-                "name='" + name + '\',' +
-                "description='" + description + '\'' +
-                '}';
+    public String toString() { return name; }
 
-         */
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Event event = (Event) o;
-        return id == event.id;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
 }
