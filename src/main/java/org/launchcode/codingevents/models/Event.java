@@ -1,13 +1,22 @@
 package org.launchcode.codingevents.models;
 
+// import org.springframework.data.annotation.Id;
+import javax.persistence.Id;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.util.Objects;
 
+// What happens here?
+// Hibernate will scan this entity object and create a table in MySQL called 'coding_events'.'event'.
+@Entity
 public class Event {
+    @Id                 // NOTE: Use the javax.persistence.Id annotation!
+    @GeneratedValue
     private int id;
-    private static int nextId = 1;
+    /* private static int nextId = 1; */
 
     @NotBlank(message = "Name is required.")
     @Size(min=3, max=50, message = "Name must be between 3 and 50 characters.")
@@ -23,17 +32,16 @@ public class Event {
     private EventType type;
 
     public Event(){
-        // TODO: Fix the problem where the output is non-consecutive numbers
-        this.id = nextId++; // This will combine this.id = nextId; and nextId++;.
+        /* this.id = nextId++; // This will combine this.id = nextId; and nextId++;. */
     }
 
     public Event(String name, String description, String contactEmail, EventType type) {
-        this();         // Call Event()
+        /* this();         // Call Event() */
         this.name = name;
         this.description = description;
         this.contactEmail = contactEmail;
         this.type = type;
-        //this.id = nextId++; // This will combine this.id = nextId; and nextId++;.
+        /* this.id = nextId++; // This will combine this.id = nextId; and nextId++;. */
     }
 
     public String getName() {

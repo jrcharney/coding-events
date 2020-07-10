@@ -23,11 +23,20 @@
 <!-- FYI: These nav and nav-item classes are bootstrap classes. -->
 <nav th:fragment="nav">
     <ul class="nav">
-        <li class="nav-item"><a class="nav-link" href="/events" title="List All Events">List All</a></li>
-        <li class="nav-item"><a class="nav-link" href="/events/create" title="Create Event">+ Add</a></li>
-        <li class="nav-item"><a class="nav-link" href="/events/delete" title="Delete Events">&times; Remove</a></li>
+        <!-- Events -->
+        <li class="nav-item"><a class="nav-link" href="/events" title="List All Events">Events</a></li>
+        <li class="nav-item"><a class="nav-link" href="/events/create" title="Create Event">+</a></li>
+        <li class="nav-item"><a class="nav-link" href="/events/delete" title="Delete Events">&times;</a></li>
+        <!-- Event Categories -->
+        <li class="nav-item"><a class="nav-link" href="/eventCategories" title="List All Event Categories">Categories</a></li>
+        <li class="nav-item"><a class="nav-link" href="/eventCategories/create" title="Create Event Category">+</a></li>
+        <li class="nav-item"><a class="nav-link" href="/eventCategories/delete" title="Delete Event Categories">&times;</a></li>
     </ul>
 </nav>
+
+<div th:fragment="construction">
+    <p><b>Under Construction</b> This page is not ready. It probably won't be completed until after Unit2 of LC101.</p>
+</div>
 
 </body>
 </html>

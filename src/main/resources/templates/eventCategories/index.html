@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org/">
+<head th:replace="fragments :: head"></head>
+<body class="container">
+
+<header th:replace="fragments :: header"></header>
+<nav th:replace="fragments :: nav"></nav>
+
+<main>
+
+    <p th:unless="${categories} and ${categories.size()}">There are no event categories yet. Why don't you <a href="eventCategories/create">create</a> one?</p>
+
+    <!-- Not part of this exercise, but worth doing anyway since we did something similar with the ul. -->
+    <table th:if="${categories.size() > 0}" class="table table-striped">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Category</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="category : ${categories}">
+            <td th:text="${category.id}"></td>
+            <td th:text="${category.name}"></td>
+            <td><a th:href="@{/eventCategories/edit/{id}(id=${category.id})}" title="Modify this Event Category">Edit</a></td>
+        </tr>
+        </tbody>
+    </table>
+
+</main>
+
+</body>
+</html>

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org/">
+<head th:replace="fragments :: head"></head>
+<body class="container">
+
+<header th:replace="fragments :: header"></header>
+<nav th:replace="fragments :: nav"></nav>
+<main>
+    <div th:replace="fragment :: construction"></div>
+    <form method="post">
+        <th:block th:each="category : ${categories}">
+            <div class="form-group">
+                <!-- We need to have text in the label or the checkbox won't appear. -->
+                <label>
+                    <input type="checkbox" name="categoryIds" th:value="${category.id}" class="form-check-input"/>
+                    <span th:text="${category.name}"></span>
+                </label>
+            </div>
+        </th:block>
+        <!-- TODO: Confirm if you want to do this. -->
+        <input type="submit" value="Delete" class="btn btn-danger"/>
+        <!-- TODO: Cancel button -->
+    </form>
+</main>
+</body>
+</html>

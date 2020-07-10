@@ -8,3 +8,5 @@ Turns out I didn't commit after each subchapter so I can't do the exercise here.
 Starting in Chapter 12, a new branch `create-model` is used for this project with Models.
 
 Also tried to fix a couple of things that weren't done in chapter 13 and 14.
+
+If you are reading this, welcome to db-config!
