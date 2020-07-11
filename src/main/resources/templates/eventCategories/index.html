@@ -14,15 +14,13 @@
     <table th:if="${categories.size() > 0}" class="table table-striped">
         <thead>
         <tr>
-            <th>ID</th>
             <th>Category</th>
             <th></th>
         </tr>
         </thead>
         <tbody>
         <tr th:each="category : ${categories}">
-            <td th:text="${category.id}"></td>
-            <td th:text="${category.name}"></td>
+            <td><a th:text="${category.name}" th:href="'/events?categoryId=' + ${category.id}"></a></td>
             <td><a th:href="@{/eventCategories/edit/{id}(id=${category.id})}" title="Modify this Event Category">Edit</a></td>
         </tr>
         </tbody>

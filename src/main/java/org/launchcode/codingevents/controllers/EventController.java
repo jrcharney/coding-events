@@ -1,9 +1,11 @@
 package org.launchcode.codingevents.controllers;
 
 //import org.launchcode.codingevents.data.EventData;    // retired!
+import org.launchcode.codingevents.data.EventCategoryRepository;
 import org.launchcode.codingevents.data.EventRepository;
 import org.launchcode.codingevents.models.Event;
-import org.launchcode.codingevents.models.EventType;
+import org.launchcode.codingevents.models.EventCategory;    // Do we still need this if it is not used?
+// import org.launchcode.codingevents.models.EventType; // retired!
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,6 +13,7 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Optional;
 //import java.util.ArrayList;
 //import java.util.List;
 
@@ -21,33 +24,63 @@ public class EventController {
     @Autowired
     private EventRepository eventRepo;
 
+    @Autowired
+    private EventCategoryRepository eventCatRepo;
+
     @GetMapping
     public String displayAllEvents(Model model){
-        model.addAttribute("title","All Events");
+        model.addAttribute("title", "All Events");
         model.addAttribute("events", eventRepo.findAll());      // EventData.getAll()
         return "events/index";  // You don't need to add file extensions when specifying template names.
     }
+
+    /*
+    @GetMapping
+    public String displayAllEvents(@RequestParam(required = false) Integer categoryId, Model model){
+        if(categoryId == null){
+            model.addAttribute("title","All Events");
+            model.addAttribute("events", eventRepo.findAll());      // EventData.getAll()
+        } else {
+            Optional<EventCategory> result = eventCatRepo.findById(categoryId);
+            // What if we wanted to find more than one?
+            // Optional<List<EventCategory>> results = eventCatRepo.findAllById(categoryId); probably? but categoryId would need to be a list of ids.
+            // Note: result.isPresent() is the same as !result.isEmpty()
+            if(result.isEmpty()){
+                model.addAttribute("title","Invalid category ID: " + categoryId);
+                // TODO: Maybe use a variable with a more personable message?
+            } else {
+                EventCategory category = result.get();
+                model.addAttribute("title","Events in category ID: " + category.getName());
+                model.addAttribute("events", category.getEvents());
+            }
+        }
+        return "events/index";  // You don't need to add file extensions when specifying template names.
+    }
+
+     */
 
     // create lives at /events, like everything else in this controller
     @GetMapping("create")
     public String renderCreateEventForm(Model model){
         model.addAttribute("title","Create Event");
         model.addAttribute(new Event());
-        model.addAttribute("types",EventType.values());
+        model.addAttribute("categories",eventCatRepo.findAll());
+        //model.addAttribute("types",EventType.values());
         return "events/create";
     }
 
     @PostMapping("create")
-    public String processCreateEvent(@ModelAttribute @Valid Event newEvent, Errors errors, Model model){
+    public String processCreateEventForm(@ModelAttribute @Valid Event newEvent, Errors errors, Model model){
         if(errors.hasErrors()){
             // Go back to the create form, but add an error message
             model.addAttribute("title","Create Event");
             // Type MUST be rendered
-            model.addAttribute("types",EventType.values());
+            //model.addAttribute("categories",eventCatRepo.findAll());    // Turn out we don't need this.
+            //model.addAttribute("types",EventType.values());
             return "events/create";
         }
 
-        eventRepo.save(newEvent);   //EventData.add(newEvent);
+        eventRepo.save(newEvent);   //EventData.add(newEvent);      // Something is wrong here.
         //return "redirect:/events";    // Implied.
         return "redirect:";
     }

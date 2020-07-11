@@ -6,7 +6,7 @@
     <header th:replace="fragments :: header"></header>
     <nav th:replace="fragments :: nav"></nav>
     <main>
-
+        <div th:replace="fragments :: construction"></div>
         <form method="post" th:action="@{/events/edit}">
             <input type="hidden" name="eventId" th:value="${event.id}"/>
             <div class="form-group">
@@ -28,9 +28,9 @@
                 <span class="error" th:errors="${event.contactEmail}"></span>
             </div>
             <div class="form-group">
-                <label>Type</label>
-                <select th:field="${event.type}">
-                    <option th:each="type : ${types}" th:value="${type}" th:text="${type.displayName}"></option>
+                <label>Category</label>
+                <select th:field="${event.category}">
+                    <option th:each="category : ${categories}" th:value="${category}" th:text="${category.name}"></option>
                 </select>
             </div>
             <div class="form-group">

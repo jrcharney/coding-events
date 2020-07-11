@@ -1,13 +1,12 @@
 package org.launchcode.codingevents.models;
 
-// import org.springframework.data.annotation.Id;
-import javax.persistence.Id;
+//import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
+import javax.persistence.ManyToOne;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.util.Objects;
 
 // What happens here?
 // Hibernate will scan this entity object and create a table in MySQL called 'coding_events'.'event'.
@@ -25,17 +24,21 @@ public class Event extends AbstractEntity {
     @Email(message = "Invalid email. Try again.")
     private String contactEmail;
 
-    private EventType type;
+    // Not sure why this is not working
+    // Something about Gradle?
+    @ManyToOne //(cascade = CascadeType.ALL)          // many events to one category. (We need the cascade variable)
+    @NotNull(message="Event Category is required")        // Note: this NotNull instead of NotBlank
+    private EventCategory eventCategory;    //private EventType type;
+    // At this point, everything that was an "EventType type" is now an "EventCategory category".
 
-    public Event() {
-    }
+    public Event() { }
 
-    public Event(String name, String description, String contactEmail, EventType type) {
+    public Event(String name, String description, String contactEmail, EventCategory eventCategory) {
         /* this();         // Call Event() */
         this.name = name;
         this.description = description;
         this.contactEmail = contactEmail;
-        this.type = type;
+        this.eventCategory = eventCategory;
     }
 
     public String getName() {
@@ -62,13 +65,24 @@ public class Event extends AbstractEntity {
         this.contactEmail = contactEmail;
     }
 
-    public EventType getType() {
+    public EventCategory getEventCategory() {
+        return eventCategory;
+    }
+
+    public void setEventCategory(EventCategory eventCategory) {
+        this.eventCategory = eventCategory;
+    }
+
+
+    /* public EventType getType() {
         return type;
     }
 
     public void setType(EventType type) {
         this.type = type;
     }
+
+     */
 
     @Override
     public String toString() { return name; }

@@ -24,15 +24,19 @@
             <!-- Why not try type="email"? ThymeLeaf should do that for us. -->
             <div class="form-group">
                 <label>Contact Email
-                    <input th:field="${event.contactEmail}" class="form-control" />
+                    <input class="form-control" th:field="${event.contactEmail}" />
                 </label>
                 <span class="error" th:errors="${event.contactEmail}"></span>
             </div>
-            <div class="form-group">
-                <label>Type</label>
-                <select th:field="${event.type}">
-                    <option th:each="type : ${types}" th:value="${type}" th:text="${type.displayName}"></option>
+            <!-- Not part of this assignment, but definitely a good exercise -->
+            <div th:unless="${categories} and ${categories.size()}" class="form-group"><b>Yikes!</b> There aren't any categories to pick from! Why not <a href="../eventCategories/create">create</a> one so we can fill this form out.</div>
+            <div th:if="${categories.size() > 0}" class="form-group">
+                <label>Category
+                <select th:field="${event.eventCategory}">
+                    <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}"></option>
                 </select>
+                </label>
+                <span class="error" th:errors="${event.eventCategory}"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-success" />

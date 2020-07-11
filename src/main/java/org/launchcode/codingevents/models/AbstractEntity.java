@@ -1,6 +1,5 @@
 package org.launchcode.codingevents.models;
 
-// import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
@@ -14,7 +13,6 @@ public abstract class AbstractEntity {
     private int id;
     /* private static int nextId = 1; */
     /* this.id = nextId++; // This will combine this.id = nextId; and nextId++;. */
-
 
     public int getId() {
         return id;
