@@ -17,20 +17,20 @@
             </div>
             <div class="form-group">
                 <label>Description
-                    <input class="form-control" th:field="${event.description}" />
+                    <input class="form-control" th:field="${event.details.description}" />
                 </label>
-                <span class="error" th:errors="${event.description}"></span>
+                <span class="error" th:errors="${event.details.description}"></span>
             </div>
             <!-- Why not try type="email"? ThymeLeaf should do that for us. -->
             <div class="form-group">
                 <label>Contact Email
-                    <input class="form-control" th:field="${event.contactEmail}" />
+                    <input class="form-control" th:field="${event.details.contactEmail}" />
                 </label>
-                <span class="error" th:errors="${event.contactEmail}"></span>
+                <span class="error" th:errors="${event.details.contactEmail}"></span>
             </div>
             <!-- Not part of this assignment, but definitely a good exercise -->
             <div th:unless="${categories} and ${categories.size()}" class="form-group"><b>Yikes!</b> There aren't any categories to pick from! Why not <a th:href="@{/eventCategories/create}">create</a> one so we can fill this form out.</div>
-            <div th:if="${categories.size() > 0}" class="form-group">
+            <div th:if="${categories} and ${categories.size() > 0}" class="form-group">
                 <label>Category
                 <select th:field="${event.category}">
                     <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}"></option>

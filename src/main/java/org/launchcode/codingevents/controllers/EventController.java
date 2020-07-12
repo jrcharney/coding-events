@@ -28,14 +28,6 @@ public class EventController {
     private EventCategoryRepository eventCatRepo;
 
     @GetMapping
-    public String displayAllEvents(Model model){
-        model.addAttribute("title", "All Events");
-        model.addAttribute("events", eventRepo.findAll());      // EventData.getAll()
-        return "events/index";  // You don't need to add file extensions when specifying template names.
-    }
-
-    /*
-    @GetMapping
     public String displayAllEvents(@RequestParam(required = false) Integer categoryId, Model model){
         if(categoryId == null){
             model.addAttribute("title","All Events");
@@ -50,14 +42,12 @@ public class EventController {
                 // TODO: Maybe use a variable with a more personable message?
             } else {
                 EventCategory category = result.get();
-                model.addAttribute("title","Events in category ID: " + category.getName());
+                model.addAttribute("title",category.getName() + " events");
                 model.addAttribute("events", category.getEvents());
             }
         }
         return "events/index";  // You don't need to add file extensions when specifying template names.
     }
-
-     */
 
     // create lives at /events, like everything else in this controller
     @GetMapping("create")
