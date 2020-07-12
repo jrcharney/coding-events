@@ -1,6 +1,7 @@
 /* @file types_to_categories.sql
  * @desc These are the queries we can use in 18.2.3 when we migrate from types to categories.
  * NOTE: Hibernate will generate tables, but we will still need to manually edit them (for now) to update tables.
+ * WARNING! Do not run this all as one file! You cn run the various line items, but as a script would be really bad!
  */
 
 /* See what is each of our tables */
@@ -28,7 +29,9 @@ ALTER TABLE coding_events.event DROP COLUMN type;
 TRUNCATE coding_events.event;
 TRUNCATE coding_events.event_category;
 
-/* After going through hell...Just drop the tables! */
+/* After going through hell...Just drop the tables!
+ * Do it in this sequence.
+ */
 DROP TABLE IF EXISTS coding_events.hibernate_sequence;
 DROP TABLE IF EXISTS coding_events.event;
 DROP TABLE IF EXISTS coding_events.event_category;

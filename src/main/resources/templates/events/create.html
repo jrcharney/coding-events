@@ -29,14 +29,14 @@
                 <span class="error" th:errors="${event.contactEmail}"></span>
             </div>
             <!-- Not part of this assignment, but definitely a good exercise -->
-            <div th:unless="${categories} and ${categories.size()}" class="form-group"><b>Yikes!</b> There aren't any categories to pick from! Why not <a href="../eventCategories/create">create</a> one so we can fill this form out.</div>
+            <div th:unless="${categories} and ${categories.size()}" class="form-group"><b>Yikes!</b> There aren't any categories to pick from! Why not <a th:href="@{/eventCategories/create}">create</a> one so we can fill this form out.</div>
             <div th:if="${categories.size() > 0}" class="form-group">
                 <label>Category
-                <select th:field="${event.eventCategory}">
+                <select th:field="${event.category}">
                     <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}"></option>
                 </select>
                 </label>
-                <span class="error" th:errors="${event.eventCategory}"></span>
+                <span class="error" th:errors="${event.category.name}"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-success" />

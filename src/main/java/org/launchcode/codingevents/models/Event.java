@@ -24,21 +24,20 @@ public class Event extends AbstractEntity {
     @Email(message = "Invalid email. Try again.")
     private String contactEmail;
 
-    // Not sure why this is not working
-    // Something about Gradle?
-    @ManyToOne //(cascade = CascadeType.ALL)          // many events to one category. (We need the cascade variable)
-    @NotNull(message="Event Category is required")        // Note: this NotNull instead of NotBlank
-    private EventCategory eventCategory;    //private EventType type;
+    // Something about Gradle? (Yes, needs and older version. 6.3)
+    @ManyToOne
+    @NotNull(message="Category is required")        // Note: this NotNull instead of NotBlank
+    private EventCategory category;    //private EventType type;
     // At this point, everything that was an "EventType type" is now an "EventCategory category".
 
     public Event() { }
 
-    public Event(String name, String description, String contactEmail, EventCategory eventCategory) {
+    public Event(String name, String description, String contactEmail, EventCategory category) {
         /* this();         // Call Event() */
         this.name = name;
         this.description = description;
         this.contactEmail = contactEmail;
-        this.eventCategory = eventCategory;
+        this.category = category;
     }
 
     public String getName() {
@@ -65,12 +64,12 @@ public class Event extends AbstractEntity {
         this.contactEmail = contactEmail;
     }
 
-    public EventCategory getEventCategory() {
-        return eventCategory;
+    public EventCategory getCategory() {
+        return category;
     }
 
-    public void setEventCategory(EventCategory eventCategory) {
-        this.eventCategory = eventCategory;
+    public void setCategory(EventCategory category) {
+        this.category = category;
     }
 
 
