@@ -30,8 +30,8 @@ public class TagController {
     @GetMapping("create")
     public String renderCreateTagForm(Model model){
         model.addAttribute("title", "Create Tag");
-        model.addAttribute(new Tag());
-        //model.addAttribute("tag",new Tag());
+        //model.addAttribute(new Tag());
+        model.addAttribute("tag",new Tag());
         return "tags/create";
     }
 
@@ -39,8 +39,8 @@ public class TagController {
     public String processCreateTagForm(@ModelAttribute @Valid Tag newTag, Errors errors, Model model){
         if(errors.hasErrors()){
             model.addAttribute("title", "Create Tag");
-            model.addAttribute(newTag);        // TODO: Watch this line. Compare it with other controllers.
-            // model.addAttribute("tag",newTag");
+            //model.addAttribute(new Tag());        // TODO: Watch this line. Compare it with other controllers.
+            model.addAttribute("tag",new Tag());
             return "tags/create";
         }
         tagRepo.save(newTag);

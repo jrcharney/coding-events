@@ -11,26 +11,40 @@
     <!-- NOTE: Avoid WLEs! Make sure that if and unlesses have the same tests! -->
     <p th:unless="${event}">Sorry, no event matches that Event ID. Why don't you <a href="events/create">create</a> an Event?</p>
 
+    <div th:if="${event}">
+        <ul>
+            <li><a th:href="@{/events/edit/{id}(id=${event.id})}" title="Modify this Event">Edit</a></li>
+            <li><a th:href="'/events/add-tag?eventId=' + ${event.id}" title="Add a tag to this event"> Add Tag</a></li>
+        </ul>
+    </div>
     <!-- Not part of this exercise, but worth doing anyway since we did something similar with the ul. -->
     <table th:if="${event}" class="table table-striped">
         <tbody>
         <tr>
             <th>ID</th>
             <td th:text="${event.id}"></td>
+            <td></td>
         </tr>
         <tr>
             <th>Description</th>
+
             <td th:text="${event.details.description}"></td>
+            <td><!-- TODO: edit description --></td>
         </tr>
         <tr>
             <th>Contact Email</th>
             <td th:text="${event.details.contactEmail}"></td>
+            <td><!-- TODO: can we edit the email address? --></td>
         </tr>
         <!-- TODO: Category -->
-        <!-- TODO: Tags -->
         <tr>
-            <th></th>
-            <td><a th:href="@{/events/edit/{id}(id=${event.id})}" title="Modify this Event">Edit</a></td>
+            <th>Tags</th>
+            <td>
+                <!-- TODO: do something about that trailing space -->
+                <!-- TODO: replace span with an anchor -->
+                <span th:each="tag : ${tags}" th:text="${tag.displayName} + ' '"></span>
+            </td>
+            <td><a th:href="'/events/add-tag?eventId=' + ${event.id}" title="Add another tag">Add</a></td>
         </tr>
         </tbody>
     </table>

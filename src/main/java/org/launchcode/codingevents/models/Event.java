@@ -77,6 +77,8 @@ public class Event extends AbstractEntity {
         this.tags.remove(tag);
     }
 
+    // TODO: Why not a hasTag(Tag tag) function to check if the tags contains a tag?
+
     @Override
     public String toString() { return name; }
 

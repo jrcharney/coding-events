@@ -42,74 +42,11 @@ package data {
     note "Repositories are in the data directory" as RepoNote
 }
 
-allowmixing
-package "resources/templates" as views {
-    file "fragments" as fragments {
-        rectangle "title" as fragments.title
-    }
-
-    file "index" as homePage {
-        rectangle "title" as homePage.title
-    }
-
-    package "events" as dirE {
-        file "index" as indexE {
-            rectangle "title" as indexE.title
-        }
-        file "create" as createE {
-            rectangle "title" as createE.title
-        }
-        file "edit" as editE {
-            rectangle "title" as editE.title
-        }
-        file "delete" as deleteE {
-            rectangle "title" as deleteE.title
-        }
-        file "details" as detailsE {
-            rectangle "title" as detailsE.title
-        }
-    }
-
-    package "eventCategory" as dirEC {
-        file "index" as indexEC {
-            rectangle "title" as indexEC.title
-        }
-        file "create" as createEC {
-            rectangle "title" as createEC.title
-        }
-        file "edit" as editEC {
-            rectangle "title" as editEC.title
-        }
-        file "delete" as deleteEC {
-            rectangle "title" as deleteEC.title
-        }
-    }
-
-    package "tags" as dirT {
-        file "index" as indexT {
-            rectangle "title" as indexT.title
-        }
-        file "create" as createT {
-            rectangle "title" as createT.title
-        }
-        file "edit" as editT {
-            rectangle "title" as editT.title
-        }
-        file "delete" as deleteT {
-            rectangle "title" as deleteT.title
-        }
-    }
-
-    fragments .[hidden]. homePage
-    homePage .[hidden]. dirE
-    dirE .[hidden]. dirEC
-    dirEC .[hidden]. dirT
-}
-
 package controllers {
     class "@RequestMapping("events")\nEventController" as EventController <<Controller>> {
         @Autowired eventRepo : EventRepository
         @Autowired eventCatRepo : EventCategoryRepository
+        @Autowired tagRepo : TagRepository
 
         +@GetMapping("index") displayAllEvents(@RequestParam(required = false) categoryId : Integer, model : Model) : String
             {method} \t title = "All Tags"
@@ -133,6 +70,13 @@ package controllers {
                 {method} \t\t title = result.get().getName()
                 {method} \t\t event = result.get()
             {method} \t return "events/details"
+        +@PostMapping("add-tag") renderAddTagForm(@RequestParam Integer eventId, Model model) : String
+            {method} \t return "events/add-tag"
+        +@GetMapping("add-tag") processAddTagForm(@ModelAttribute @Valid EventTagDTO eventTag, Errors errors, Model model) : String
+                {method} \t\t title = result.get().getName()
+                {method} \t\t tags = tagRepo.findAll()
+                {method} \t\t eventTag = new eventTagDTO(event);
+            {method} \t return "events/add-tag"
     }
 
     class "@RequestMapping("categories")\nEventCategoryController" as EventCategoryController <<Controller>> {
@@ -157,15 +101,16 @@ package controllers {
         @Autowired tagRepo : TagRepository
         +@GetMapping("index") displayAllTags(model : Model) : String
             {method} \t title = "All Tags"
-            {method} \t tags = tagRepo.findAll()
+            {method} \t tags  = tagRepo.findAll()
             {method} \t return "tags/index"
         +@GetMapping("create") renderCreateTagForm(model : Model) : String
             {method} \t title = "Create Tag"
-            {method} \t tags = tagRepo.findAll()
+            {method} \t tag   = new Tag()
             {method} \t return "tags/index"
         +@PostMapping("create") processCreateTagForm(newTag : Tag, errors : Errors, model : Model) : String
             {method} \t OnError
                 {method} \t\t title = "Create Tag"
+                {method} \t\t tag   = new Tag()
                 {method} \t\t return "tags/index"
             {method} \t Else
                 {method} \t\t return "redirect:"
@@ -204,18 +149,40 @@ package "org.springframework.ui" as ModelPkg {
 
 ModelPkg .[hidden] controllers
 
-HomeController ..> homePage
-EventController ..> dirE : RequestMapping("events")
-EventCategoryController ..> dirEC : RequestMapping("categories")
-TagController ..> dirT : RequestMapping("tags")
-
 EventRepository <.. EventController  : <<uses>>
 EventCategoryRepository <.. EventController  : <<uses>>
 EventCategoryRepository <.. EventCategoryController  : <<uses>>
 TagRepository <.. TagController : <<uses>>
+TagRepository <.. EventController  : <<uses>>
 
 ' Entities are in the models directory
 package models {
+    package "dto" as dtos {
+
+        note as DTONote
+        Just as SQL has join tables to connect records from
+        two different tables by their ids in another table,
+        Data Transfer Objects (DTOs) are used to connect
+        two objects of different types with another object.
+        DTOs should be put in their own package inside the
+        models directory.
+        It appears they are not entities like the objects
+        linked by them.
+        endnote
+
+        class EventTagDTO {
+            -event : Event
+            -tag : Tag
+            __
+            EventTagDTO()
+            ..Setters and Getters..
+            +getEvent() : Event
+            +setEvent(event : Event) : void
+            +getTag() : Tag
+            +setTag(tag : Tag) : void
+        }
+    }
+
     abstract class AbstractEntity <<MappedSuperClass>> {
         -id : int
         +getId() : int
@@ -241,7 +208,7 @@ package models {
         +setTag(tag : Tag) : void
         ..
         +addTag(tag : Tag) : void
-        +deleteTags(ids : int[]) void <b>(Not available yet!)</b>
+        +deleteTag(tag Tag) void
         +toString() : String
     }
     class EventDetails <<Entity>> extends AbstractEntity {
@@ -289,6 +256,8 @@ package models {
     endnote
 
     Tag .[hidden]. ModelNote
+    Event <-- EventTagDTO
+    Tag <-- EventTagDTO
 }
 
 EventController *-- Event : <<contains>>
@@ -351,6 +320,8 @@ Tag .. tag
 data .[hidden]. controllers
 controllers .[hidden]. models
 coding_events .[hidden] models
-coding_events .[hidden] views
+
+' I removed the views part because it was slowing everything down.
+' See file_list.puml
 
 @enduml

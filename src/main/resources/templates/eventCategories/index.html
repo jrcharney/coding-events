@@ -10,6 +10,7 @@
 
     <p th:unless="${categories} and ${categories.size()}">There are no event categories yet. Why don't you <a href="eventCategories/create">create</a> one?</p>
 
+    <!-- TODO: report how many events are using a specific category -->
     <!-- Not part of this exercise, but worth doing anyway since we did something similar with the ul. -->
     <table th:if="${categories.size() > 0}" class="table table-striped">
         <thead>
@@ -24,6 +25,12 @@
             <td><a th:href="@{/eventCategories/edit/{id}(id=${category.id})}" title="Modify this Event Category">Edit</a></td>
         </tr>
         </tbody>
+        <tfoot>
+        <tr>
+            <td><a href="eventCategories/create" title="Add a new category.">Add</a></td>
+            <td></td>
+        </tr>
+        </tfoot>
     </table>
 
 </main>

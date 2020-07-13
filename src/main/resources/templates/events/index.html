@@ -32,7 +32,7 @@
         <tbody>
             <tr th:each="event : ${events}">
                 <!-- TODO: Checkboxes for deletion -->
-                <td><a th:href="'/events/details?eveintId=' + ${event.id}" th:text="${event.name}" title="View details about this Event"></a></td>
+                <td><a th:href="'/events/details?eventId=' + ${event.id}" th:text="${event.name}" title="View details about this Event"></a></td>
                 <td><a th:href="'/events?categoryId=' + ${event.category.id}" th:text="${event.category.name}"></a></td>
                 <!-- <td><a th:href="@{/events/edit/{id}(id=${event.id})}" title="Modify this Event">Edit</a></td> -->
             </tr>

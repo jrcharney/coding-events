@@ -1,0 +1,89 @@
+@startuml
+
+' This file list was making everything dreadfully slow! So I removed it.
+' What the straw that broke the camel's back was when files didn't align vertically and with REASONABLE spacing!
+' So we're putting a pin in this for now.
+
+/'
+HomeController ..> homePage
+EventController ..> dirE : RequestMapping("events")
+EventCategoryController ..> dirEC : RequestMapping("categories")
+TagController ..> dirT : RequestMapping("tags")
+coding_events .[hidden] views
+'/
+
+scale 0.5
+allowmixing
+
+package "resources/templates" as views {
+    file "fragments" as fragments {
+        rectangle "title" as fragments.title
+    }
+
+    file "index" as homePage {
+        rectangle "title" as homePage.title
+    }
+
+    package "events" as dirE {
+        file "index" as indexE {
+            rectangle "title" as indexE.title
+        }
+        file "create" as createE {
+            rectangle "title" as createE.title
+        }
+        file "edit" as editE {
+            rectangle "title" as editE.title
+        }
+        file "delete" as deleteE {
+            rectangle "title" as deleteE.title
+        }
+        file "details" as detailsE {
+            rectangle "title" as detailsE.title
+        }
+        file "add-tag" as addTagE {
+            rectangle "title" as addTagE.title
+            rectangle "eventTag" as addTagE.eventTag
+            rectangle "tags" as addTagE.tag
+            addTagE.title .[hidden]. addTagE.eventTag
+            addTagE.eventTag .[hidden]. addTagE.tag
+        }
+    }
+
+    package "eventCategory" as dirEC {
+        file "index" as indexEC {
+            rectangle "title" as indexEC.title
+        }
+        file "create" as createEC {
+            rectangle "title" as createEC.title
+        }
+        file "edit" as editEC {
+            rectangle "title" as editEC.title
+        }
+        file "delete" as deleteEC {
+            rectangle "title" as deleteEC.title
+        }
+    }
+
+    package "tags" as dirT {
+        file "index" as indexT {
+            rectangle "title" as indexT.title
+        }
+        file "create" as createT {
+            rectangle "title" as createT.title
+        }
+        file "edit" as editT {
+            rectangle "title" as editT.title
+        }
+        file "delete" as deleteT {
+            rectangle "title" as deleteT.title
+        }
+    }
+
+    fragments .[hidden]. homePage
+    homePage .[hidden]. dirE
+    dirE .[hidden]. dirEC
+    dirEC .[hidden]. dirT
+}
+
+
+@enduml

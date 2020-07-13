@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org/">
+<head th:replace="fragments :: head"></head>
+<body class="container">
+
+<header th:replace="fragments :: header"></header>
+<nav th:replace="fragments :: nav"></nav>
+<main>
+
+    <div th:unless="${tags} and ${tags.size()}" class="form-group"><b>Yikes!</b> There aren't any tags to pick from! Why not <a th:href="@{/tags/create}">create</a> one so we can fill this form out.</div>
+    <form th:if="${tags} and ${tags.size() > 0}" method="post"><!-- No action needed? action="/eventCategories/create" -->
+        <!-- NOTE: thymeleaf's field attribute will generate id, type, name, and value input attributes -->
+        <input type="hidden" th:field="${eventTag.event}">
+        <div class="form-group">
+            <label>Tag
+                <select th:field="${eventTag.tag}">
+                    <option th:each="tag : ${tags}" th:value="${tag.id}" th:text="${tag.name}"></option>
+                </select>
+            </label>
+            <!-- <span th:errors="${tag.name}" class="error"></span> -->
+            <span>Not seeing anything you like? <a th:href="@{/tags/create}">Add a new tag.</a></span>
+        </div>
+        <div class="form-group">
+            <input type="submit" value="Add Tag" class="btn btn-success" />
+        </div>
+    </form>
+
+</main>
+
+</body>
+</html>

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org/">
+<head th:replace="fragments :: head"></head>
+<body class="container">
+
+<header th:replace="fragments :: header"></header>
+<nav th:replace="fragments :: nav"></nav>
+
+<main>
+
+    <p th:unless="${tags} and ${tags.size()}">There are no tags yet. Why don't you <a th:href="@{/tags/create}">create</a> one?</p>
+
+    <!-- TODO: report the number of events that are using each tag. -->
+    <!-- Not part of this exercise, but worth doing anyway since we did something similar with the ul. -->
+    <table th:if="${tags.size() > 0}" class="table table-striped">
+        <thead>
+        <tr>
+            <th>Tag</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="tag : ${tags}">
+            <td><a th:text="${tag.getDisplayName()}" th:href="'/events?tagId=' + ${tag.id}" th:title="${tag.name}"></a></td>
+            <td><a th:href="@{/tags/edit/{id}(id=${tag.id})}" title="Modify this Tag">Edit</a></td>
+        </tr>
+        </tbody>
+        <tfoot>
+        <tr>
+            <td><a th:href="@{/tags/create}" title="Add a new tag">Add</a></td>
+            <td></td>
+        </tr>
+        </tfoot>
+    </table>
+
+</main>
+
+</body>
+</html>

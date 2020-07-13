@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org/">
+<head th:replace="fragments :: head"></head>
+<body class="container">
+
+<header th:replace="fragments :: header"></header>
+<nav th:replace="fragments :: nav"></nav>
+<main>
+
+    <form method="post" action="/tags/create">
+        <!-- NOTE: thymeleaf's field attribute will generate id, type, name, and value input attributes -->
+        <div class="form-group">
+            <label>Name
+                <input th:field="${tag.name}" class="form-control" />
+            </label>
+            <span th:errors="${tag.name}" class="error"></span>
+        </div>
+        <div class="form-group">
+            <input type="submit" value="Create" class="btn btn-success" />
+        </div>
+    </form>
+
+</main>
+
+</body>
+</html>
