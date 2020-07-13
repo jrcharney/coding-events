@@ -53,7 +53,7 @@ public class EventController {
     @GetMapping("create")
     public String renderCreateEventForm(Model model){
         model.addAttribute("title","Create Event");
-        model.addAttribute(new Event());
+        model.addAttribute(new Event());                                    // basically model.addAttribute("event",new Event());
         model.addAttribute("categories",eventCatRepo.findAll());
         //model.addAttribute("types",EventType.values());
         return "events/create";
@@ -73,6 +73,20 @@ public class EventController {
         eventRepo.save(newEvent);   //EventData.add(newEvent);      // Something is wrong here.
         //return "redirect:/events";    // Implied.
         return "redirect:";
+    }
+
+    @GetMapping("details")
+    public String displayEventDetails(@RequestParam Integer eventId, Model model){
+        Optional<Event> result = eventRepo.findById(eventId);
+        if(result.isEmpty()){
+            model.addAttribute("title", "Invalid Event Id: " + eventId);
+            // TODO: Needs a better error message.
+        }else{
+            Event event = result.get();
+            model.addAttribute("title", "Details for " + event.getName());
+            model.addAttribute("event",event);
+        }
+        return "events/details";
     }
 
     // TODO: Fix our edit stuff later.
@@ -122,7 +136,7 @@ public class EventController {
     // Here we add "required = false" to the RequestParam in case there are no events.
     // If we don't do that. We get a Whitelabel Error.
     @PostMapping("delete")
-    public String processDeleteEvents(@RequestParam(required = false) int[] eventIds){
+    public String processDeleteEventsForm(@RequestParam(required = false) int[] eventIds){
         if(eventIds != null) {
             for (int id : eventIds) {
                 eventRepo.deleteById(id);   //EventData.remove(id);

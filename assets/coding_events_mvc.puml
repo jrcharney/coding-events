@@ -1,0 +1,68 @@
+@startuml
+
+title Spring/Hibernate Model-View-Controller
+
+'left to right direction
+'skinparam linetype polyline
+'skinparam linetype ortho
+allowmixing
+
+package "Database" as db <<Database>> {
+    package "tables" as tbls <<Rectangle>> {
+        rectangle "fields" as flds
+    }
+}
+
+package "Model" as m {
+    rectangle "Entities" as entities #ddddff
+    rectangle "MappedSuperClasses" as mscs #ddddff
+}
+
+package "Controller" as c {
+    rectangle "Repositories" as repos #ddffdd
+    rectangle "Controllers" as controllers #ffdddd
+}
+package "View" as v {
+    together {
+        package "Assets" as assets {
+            rectangle "JSON Data?" as json
+            rectangle "Images" as imgs
+        }
+
+        package "Static Resources" as statics {
+            rectangle "JavaScript" as js
+            rectangle "CSS" as css
+        }
+
+        assets .[hidden]. statics
+    }
+    package "Pages" as pages {
+        rectangle "Templates" as temps
+        rectangle "Fragments" as frags
+    }
+}
+
+db -[hidden] m
+' I have wasted hours trying to get these connectors to stop
+' connecting to the left side of the tbls object. Nothing seems to work!
+tbls <- mscs
+mscs <- tbls
+tbls <- entities
+entities <- tbls
+
+m -[hidden] c
+mscs <|-down- entities
+controllers -left-> mscs
+mscs -right-> controllers
+controllers -left-> entities
+entities -right-> controllers
+
+c -[hidden] v
+controllers <.down. repos
+temps -left-> controllers
+controllers -right-> temps
+frags .down.> temps
+pages <-right- assets
+pages <-right- statics
+
+@enduml

@@ -16,7 +16,7 @@ import javax.validation.Valid;
  */
 
 @Controller
-@RequestMapping("eventCategories")
+@RequestMapping("eventCategories")          // TODO: change this to "categories"
 public class EventCategoryController {
 
     @Autowired
@@ -24,14 +24,14 @@ public class EventCategoryController {
 
     // "index" is implied
     @GetMapping
-    public String displayAllEvents(Model model){
+    public String displayAllEventCategories(Model model){        // TODO: change this to "displayAllCategories"
         model.addAttribute("title","All Categories");
         model.addAttribute("categories",eventCatRepo.findAll());
-        return "eventCategories/index";
+        return "eventCategories/index";     // TODO: change this to "categories/index"
     }
 
     @GetMapping("create")
-    public String renderCreateEventCategoryForm(Model model){
+    public String renderCreateEventCategoryForm(Model model){       // TODO: change this to "renderCreateCategoryForm"
         model.addAttribute("title","Create Category");
         //model.addAttribute(new EventCategory());  // DON'T FORGET ATTRIBUTE NAMES!
         model.addAttribute("category", new EventCategory());  // DON'T FORGET ATTRIBUTE NAMES!
@@ -39,11 +39,12 @@ public class EventCategoryController {
     }
 
     @PostMapping("create")
-    public String processCreateEventCategoryForm(@ModelAttribute @Valid EventCategory newEventCat, Errors errors, Model model) {
+    public String processCreateEventCategoryForm(@ModelAttribute @Valid EventCategory newEventCat, Errors errors, Model model) {    // TODO: change this to "processCreateCategoryForm"
         if (errors.hasErrors()) {
             // GO back to the create for, but add an error message.
             model.addAttribute("title", "Create Category");
             //model.addAttribute(new EventCategory());        // This line should fix a lot of things!
+            // TODO: Should the next line be rewritten? Why doesn't it use newEventCat?
             model.addAttribute("category",new EventCategory());        // This line should fix a lot of things!
             return "eventCategories/create";
         }

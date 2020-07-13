@@ -21,22 +21,83 @@
 </header>
 
 <!-- FYI: These nav and nav-item classes are bootstrap classes. -->
+<!-- TODO: have */[create|edit|delete] links appear only when their relevant pages show up. -->
+<!-- TODO: Search/filter/query items...maybe as a form on top of the page. Like a search engine. -->
 <nav th:fragment="nav">
     <ul class="nav">
+        <!-- Home (I've been meaning to add this.) -->
+        <li class="nav-item"><a class="nav-link" href="/" title="Return to the home page.">Home</a></li>
         <!-- Events -->
         <li class="nav-item"><a class="nav-link" href="/events" title="List All Events">Events</a></li>
-        <li class="nav-item"><a class="nav-link" href="/events/create" title="Create Event">+</a></li>
+        <li class="nav-item"><a class="nav-link" href="/events/create" title="Create an Event">+</a></li>
         <li class="nav-item"><a class="nav-link" href="/events/delete" title="Delete Events">&times;</a></li>
         <!-- Event Categories -->
-        <li class="nav-item"><a class="nav-link" href="/eventCategories" title="List All Event Categories">Categories</a></li>
-        <li class="nav-item"><a class="nav-link" href="/eventCategories/create" title="Create Event Category">+</a></li>
-        <li class="nav-item"><a class="nav-link" href="/eventCategories/delete" title="Delete Event Categories">&times;</a></li>
+        <!-- TODO: convert "eventCategories" to simply "categories" -->
+        <li class="nav-item"><a class="nav-link" href="/eventCategories" title="List All Categories">Categories</a></li>
+        <li class="nav-item"><a class="nav-link" href="/eventCategories/create" title="Create a Category">+</a></li>
+        <li class="nav-item"><a class="nav-link" href="/eventCategories/delete" title="Delete Categories">&times;</a></li>
+        <!-- Event Tags -->
+        <li class="nav-item"><a class="nav-link" href="/tags" title="List All Tags">Tags</a></li>
+        <li class="nav-item"><a class="nav-link" href="/tags/create" title="Create a Tag">+</a></li>
+        <li class="nav-item"><a class="nav-link" href="/tags/delete" title="Delete Tags">&times;</a></li>
     </ul>
+    <!-- TODO: A search form with drop down menu -->
 </nav>
 
 <div th:fragment="construction">
     <p><b>Under Construction</b> This page is not ready. It probably won't be completed until after Unit2 of LC101.</p>
 </div>
+
+<!-- Not part of any assignment, but I have some thoughts ond searching -->
+<!-- TODO: Is it possible to have a fragments directory to store some fragments in separate files? -->
+
+<!-- The query field universally is called "q" for query. -->
+<div th:fragment="query">
+    <label>
+        <span>Search </span>
+        <input type="text" name="q" placeholder="Search" value="" />
+    </label>
+</div>
+
+<!-- TODO: depending on what part of the website you are in, set the default to what's relevant. -->
+<div th:fragment="filters">
+    <label>
+        <span>Search In </span>
+        <select name="f">
+            <option value="any">Anything</option>
+            <option value="events">Events</option>
+            <option value="eventCategories">Categories</option>
+            <option value="tags">Tags</option>
+        </select>
+    </label>
+</div>
+
+<div th:fragment="findit">
+    <input type="submit" value="Search"></div>
+</div>
+
+<!-- Centered full search, like how Google starts up -->
+<!-- NOTE: Google would probably have certain tagged words in leu of a drop down menu. I'm a bit more old school and want a drop down -->
+<!-- TODO: Flexbox! -->
+<div th:fragment="search" id="search">
+    <form>
+        <div th:replace="fragments :: query"></div>
+        <div th:replace="fragments :: filters"></div>
+        <div th:replace="fragments :: findit"></div>
+    </form>
+</div>
+
+<!-- This search box would go in the nav -->
+<!-- TODO: flexbox -->
+<div th:fragment="navsearch" id="navsearch">
+    <form>
+        <div th:replace="fragments :: query"></div>
+        <div th:replace="fragments :: filters"></div>
+        <div th:replace="fragments :: findit"></div>
+    </form>
+</div>
+
+<!-- TODO: Advance search, which would allow search by field -->
 
 </body>
 </html>

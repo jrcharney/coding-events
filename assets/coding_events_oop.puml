@@ -1,0 +1,356 @@
+@startuml
+
+title Coding Events
+
+scale 0.75
+
+' this applies to both classes and interfaces
+skinparam class {
+    BackgroundColor<<Controller>> #ffdddd
+    BackgroundColor<<Repository>> #ddffdd
+    BackgroundColor<<Entity>> #ddddff
+    BackgroundColor<<MappedSuperClass>> #ddddff
+}
+
+/'
+class CodingEventsApplication {
+    {static} main(args : Strings) : void
+}
+'/
+
+' Repositories are in the data directory
+package "org.springframework.data.repository" as RepoPkg {
+    interface Repository <T,ID>
+    interface CRUDRepository <T,ID> extends Repository {
+        count() : long
+        delete(entity : T) : void
+        deleteAll() : void
+        deleteAll(entities : Iterable<? extends T>) : void
+        deleteById(id : ID) : void
+        exitsById(id : ID) : boolean
+        findAll() : Iterable<T>
+        findAllByID(ids : Iterable<ID>) : Iterable<T>
+        findById(id : ID) : Optional<T>
+        save(entity : S) : <S extends T> S
+        saveAll(entities Iterable< S >) : <S extends T> Iterable< S >
+    }
+}
+package data {
+    interface EventRepository<Event,Integer> <<Repository>> extends CRUDRepository {}
+    interface EventCategoryRepository<EventCategory,Integer> <<Repository>> extends CRUDRepository {}
+    interface TagRepository<Tag,Integer> <<Repository>> extends CRUDRepository {}
+    note "Repositories are in the data directory" as RepoNote
+}
+
+allowmixing
+package "resources/templates" as views {
+    file "fragments" as fragments {
+        rectangle "title" as fragments.title
+    }
+
+    file "index" as homePage {
+        rectangle "title" as homePage.title
+    }
+
+    package "events" as dirE {
+        file "index" as indexE {
+            rectangle "title" as indexE.title
+        }
+        file "create" as createE {
+            rectangle "title" as createE.title
+        }
+        file "edit" as editE {
+            rectangle "title" as editE.title
+        }
+        file "delete" as deleteE {
+            rectangle "title" as deleteE.title
+        }
+        file "details" as detailsE {
+            rectangle "title" as detailsE.title
+        }
+    }
+
+    package "eventCategory" as dirEC {
+        file "index" as indexEC {
+            rectangle "title" as indexEC.title
+        }
+        file "create" as createEC {
+            rectangle "title" as createEC.title
+        }
+        file "edit" as editEC {
+            rectangle "title" as editEC.title
+        }
+        file "delete" as deleteEC {
+            rectangle "title" as deleteEC.title
+        }
+    }
+
+    package "tags" as dirT {
+        file "index" as indexT {
+            rectangle "title" as indexT.title
+        }
+        file "create" as createT {
+            rectangle "title" as createT.title
+        }
+        file "edit" as editT {
+            rectangle "title" as editT.title
+        }
+        file "delete" as deleteT {
+            rectangle "title" as deleteT.title
+        }
+    }
+
+    fragments .[hidden]. homePage
+    homePage .[hidden]. dirE
+    dirE .[hidden]. dirEC
+    dirEC .[hidden]. dirT
+}
+
+package controllers {
+    class "@RequestMapping("events")\nEventController" as EventController <<Controller>> {
+        @Autowired eventRepo : EventRepository
+        @Autowired eventCatRepo : EventCategoryRepository
+
+        +@GetMapping("index") displayAllEvents(@RequestParam(required = false) categoryId : Integer, model : Model) : String
+            {method} \t title = "All Tags"
+            {method} \t categories = eventCatRepo.findAll()
+            {method} \t return "event/index"
+        +@GetMapping("create") renderCreateEventCategoryForm(model : Model) : String
+            {method} \t title = "Create Tag"
+            {method} \t events = eventRepo.findAll()
+            {method} \t categories = eventCatRepo.findAll()
+            {method} \t return "events/index"
+        +@PostMapping("create") processCreateEventForm(newEvent : Event, errors : Errors, model : Model) : String
+            {method} \t OnError
+                {method} \t\t title = "Create Tag"
+                {method} \t\t return "events/index"
+            {method} \t Else
+                {method} \t\t return "redirect:"
+        +@GetMapping("details") displayEventDetails(@RequestParam eventId : Integer, model : Model) : String
+            {method} \t OnEmpty
+                {method} \t\t title = "Invalid " + eventId
+            {method} \t Else
+                {method} \t\t title = result.get().getName()
+                {method} \t\t event = result.get()
+            {method} \t return "events/details"
+    }
+
+    class "@RequestMapping("categories")\nEventCategoryController" as EventCategoryController <<Controller>> {
+        @Autowired eventCatRepo : EventCategoryRepository
+        +@GetMapping("index") displayAllEventCategories(model : Model) : String
+            {method} \t title = "All Tags"
+            {method} \t categories = eventCatRepo.findAll()
+            {method} \t return "eventCategories/index"
+        +@GetMapping("create") renderCreateEventCategoryForm(model : Model) : String
+            {method} \t title = "Create Tag"
+            {method} \t tags = tagRepo.findAll()
+            {method} \t return "eventCategories/index"
+        +@PostMapping("create") processCreateEventCategoryForm(newCategory : EventCategory, errors : Errors, model : Model) : String
+            {method} \t OnError
+                {method} \t\t title = "Create Tag"
+                {method} \t\t return "eventCategories/index"
+            {method} \t Else
+                {method} \t\t return "redirect:"
+    }
+
+    class "@RequestMapping("tags")\nTagController" as TagController <<Controller>> {
+        @Autowired tagRepo : TagRepository
+        +@GetMapping("index") displayAllTags(model : Model) : String
+            {method} \t title = "All Tags"
+            {method} \t tags = tagRepo.findAll()
+            {method} \t return "tags/index"
+        +@GetMapping("create") renderCreateTagForm(model : Model) : String
+            {method} \t title = "Create Tag"
+            {method} \t tags = tagRepo.findAll()
+            {method} \t return "tags/index"
+        +@PostMapping("create") processCreateTagForm(newTag : Tag, errors : Errors, model : Model) : String
+            {method} \t OnError
+                {method} \t\t title = "Create Tag"
+                {method} \t\t return "tags/index"
+            {method} \t Else
+                {method} \t\t return "redirect:"
+    }
+
+    class "HomeController" as HomeController <<Controller>> {
+        + @GetMapping("index") index(model : Model) : String
+            {method} \t title = "Coding Events"
+            {method} \t return "index"
+    }
+
+    note as ControllerNote
+    Controllers communicate with the templates in the resources directory.
+    Controllers are in the controllers directory.
+    Controllers have access to the database?
+    Repositories that are used in controllers are autowired.
+    Just about every method returns a String to a relative path.
+    With exception of the HomeController, every controller has a RequestMapping
+    which is a path relative to the templates directory.
+    Just about every method has a Model argument.
+    endnote
+}
+
+package "org.springframework.ui" as ModelPkg {
+    interface Model {
+        addAllAttributes(attributeValues : Collection<?>) : Model
+        addAllAttributes(attributes : Map<String,?>) : Model
+        addAttribute(attribute : Object) : Model
+        addAttribute(attributeName : String, AttributeValue : Object) : Model
+        asMap() : Map<String,Object>
+        containsAttribute(attributeName : String) : boolean
+        getAttribute(attributeName : String) : Object
+        mergeAttributes(attributes : Map<String,?>) : Model
+    }
+}
+
+ModelPkg .[hidden] controllers
+
+HomeController ..> homePage
+EventController ..> dirE : RequestMapping("events")
+EventCategoryController ..> dirEC : RequestMapping("categories")
+TagController ..> dirT : RequestMapping("tags")
+
+EventRepository <.. EventController  : <<uses>>
+EventCategoryRepository <.. EventController  : <<uses>>
+EventCategoryRepository <.. EventCategoryController  : <<uses>>
+TagRepository <.. TagController : <<uses>>
+
+' Entities are in the models directory
+package models {
+    abstract class AbstractEntity <<MappedSuperClass>> {
+        -id : int
+        +getId() : int
+        +equals(o : Object) : boolean
+        +hashcode() : int
+    }
+    class Event <<Entity>> extends AbstractEntity {
+        -name : String
+        -details : EventDetails /' OneToOne '/
+        -category : EventCategory /' OneToMany '/
+        -tags : List<Tag> /' {final} '/
+        __
+        +Event()
+        +Event(name : String, details : String, contactEmail : String, category : EventCategory)
+        .. Getters and Setters ..
+        +getName() : String
+        +setName(name : String) : void
+        +getDetails() : EventDetails
+        +setDetails(details : EventDetails) : void
+        +getCategory() : EventCategory
+        +setCategory(category : EventCategory) : void
+        +getTags() : List<Tag>
+        +setTag(tag : Tag) : void
+        ..
+        +addTag(tag : Tag) : void
+        +deleteTags(ids : int[]) void <b>(Not available yet!)</b>
+        +toString() : String
+    }
+    class EventDetails <<Entity>> extends AbstractEntity {
+        -description : String
+        -contactEmail : String
+        __
+        EventDetails()
+        EventDetails(description : String, contactEmail : String)
+        .. Getters and Setters ..
+        +getDescription() : String
+        +setDescription(description : String) : void
+        +getContactEmail() : String
+        +setContacEmail(contactEmail : String) : void
+    }
+    class EventCategory <<Entity>> extends AbstractEntity {
+        -name : String
+        -events : List<Event>   /' {final}, OneToMany(mappedBy="category") '/
+        __
+        EventCategory()
+        EventCategory(name : String)
+        ..Getters and Setters..
+        +getName() : String
+        +setName(name : String) : void
+        +getEvents() : List<Event>
+        ..
+        toString() : String
+    }
+    class Tag <<Entity>> extends AbstractEntity {
+        -name : String
+        -events : List<Event> /' {final}, ManyToMany(mappedBy="tags") '/
+        __
+        Tag()
+        Tag(name : String)
+        ..Getters and Setters..
+        +getName() : String
+        +setName(name : String) : void
+        +getEvents() : List<Event>
+        +getDisplayName() : String
+    }
+
+    note as ModelNote
+    Almost every class is represented by a table in the corresponding database.
+    Just about every class in the models package is an @Entity.
+    Abstract classes that represent Entity classes should be a @MappedSuperClass.
+    endnote
+
+    Tag .[hidden]. ModelNote
+}
+
+EventController *-- Event : <<contains>>
+EventCategoryController *-- EventCategory : <<contains>>
+TagController *-- Tag : <<contains>>
+
+Event "1" o-- "1" EventDetails  /' OneToOne '/
+Event "1" o-- "*" EventCategory /' OneToMany '/
+Event "*" o-- "*" Tag           /' ManyToMany '/
+
+database coding_events {
+    entity hibernate_sequence {
+        next_val : INTEGER
+    }
+
+    entity event {
+        id : INTEGER
+        name : VARCHAR(50)
+        category_id : INTEGER
+        details_id : INTEGER
+    }
+
+    /' 1..1 '/
+    entity event_details {
+        id : INTEGER
+        contact_email : VARCHAR(255)
+        description  VARCHAR(500)
+    }
+
+    /' 1..* '/
+    entity event_category {
+        id : INTEGER
+        name : VARCHAR(255)
+    }
+
+    /' *..* '/
+    entity tag {
+        id : INTEGER
+        name : VARCHAR(255)
+    }
+
+    entity event_tags {
+        events_id : INTEGER
+        tag_id : INTEGER
+    }
+
+    event -- event_tags
+    event -- event_details
+    event -- event_category
+    event_tags -- tag
+}
+
+AbstractEntity .. hibernate_sequence
+Event .. event
+EventCategory .. event_category
+EventDetails .. event_details
+Tag .. tag
+
+' Top to bottom
+data .[hidden]. controllers
+controllers .[hidden]. models
+coding_events .[hidden] models
+coding_events .[hidden] views
+
+@enduml

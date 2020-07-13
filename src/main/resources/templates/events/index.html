@@ -23,22 +23,18 @@
     <table th:if="${events} and ${events.size() > 0}" class="table table-striped">
         <thead>
             <tr>
-                <th>ID</th>
+                <!-- TODO: Checkboxes for deletion, like how Gmail does it. -->
                 <th>Name</th>
-                <th>Description</th>
-                <th>Contact Email</th>
                 <th>Category</th>
-                <th></th>
+                <!-- <th></th> -->
             </tr>
         </thead>
         <tbody>
             <tr th:each="event : ${events}">
-                <td th:text="${event.id}"></td>
-                <td th:text="${event.name}"></td>
-                <td th:text="${event.details.description}"></td>
-                <td th:text="${event.details.contactEmail}"></td>
-                <td th:text="${event.category.name}"></td>
-                <td><a th:href="@{/events/edit/{id}(id=${event.id})}" title="Modify this Event">Edit</a></td>
+                <!-- TODO: Checkboxes for deletion -->
+                <td><a th:href="'/events/details?eveintId=' + ${event.id}" th:text="${event.name}" title="View details about this Event"></a></td>
+                <td><a th:href="'/events?categoryId=' + ${event.category.id}" th:text="${event.category.name}"></a></td>
+                <!-- <td><a th:href="@{/events/edit/{id}(id=${event.id})}" title="Modify this Event">Edit</a></td> -->
             </tr>
         </tbody>
     </table>

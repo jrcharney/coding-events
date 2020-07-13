@@ -11,7 +11,10 @@ CREATE PROCEDURE `drop_coding_events` ()
 BEGIN
 DROP TABLE IF EXISTS coding_events.hibernate_sequence;
 DROP TABLE IF EXISTS coding_events.event;
+DROP TABLE IF EXISTS coding_events.event_details;
 DROP TABLE IF EXISTS coding_events.event_category;
+DROP TABLE IF EXISTS coding_events.event_tags;
+DROP TABLE IF EXISTS coding_events.tag;
 END$$
 
 DELIMITER ;

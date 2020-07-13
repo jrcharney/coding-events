@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org/">
+<head th:replace="fragments :: head"></head>
+<body class="container">
+
+<header th:replace="fragments :: header"></header>
+<nav th:replace="fragments :: nav"></nav>
+
+<main>
+
+    <!-- NOTE: Avoid WLEs! Make sure that if and unlesses have the same tests! -->
+    <p th:unless="${event}">Sorry, no event matches that Event ID. Why don't you <a href="events/create">create</a> an Event?</p>
+
+    <!-- Not part of this exercise, but worth doing anyway since we did something similar with the ul. -->
+    <table th:if="${event}" class="table table-striped">
+        <tbody>
+        <tr>
+            <th>ID</th>
+            <td th:text="${event.id}"></td>
+        </tr>
+        <tr>
+            <th>Description</th>
+            <td th:text="${event.details.description}"></td>
+        </tr>
+        <tr>
+            <th>Contact Email</th>
+            <td th:text="${event.details.contactEmail}"></td>
+        </tr>
+        <!-- TODO: Category -->
+        <!-- TODO: Tags -->
+        <tr>
+            <th></th>
+            <td><a th:href="@{/events/edit/{id}(id=${event.id})}" title="Modify this Event">Edit</a></td>
+        </tr>
+        </tbody>
+    </table>
+</main>
+
+</body>
+</html>

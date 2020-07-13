@@ -1,0 +1,108 @@
+@startuml
+
+hide stereotype
+
+skinparam {
+    ArrowColor<<pkey>> green
+    ArrowColor<<fkey>> blue
+    UseCaseBackgroundColor<<Join>> #ffdddd
+}
+
+' NOTE: The new syntax has not been implemented yet.
+' See plantuml.com/preprocessing
+
+!define table(x) (<b>x</b>)
+
+!definelong field(x,key = false)
+    !if key == "true"
+        rectangle "<b>x</b>"
+    !else
+        rectangle "x"
+    !endif
+!enddefinelong
+
+!definelong rel(tbl,fld,key = "")
+    !if key == "p"
+        tbl -- fld <<pkey>>
+    !else
+        !if key == "f"
+            tbl -- fld <<fkey>>
+        !else
+            tbl -- fld
+        !endif
+    !endif
+!enddefinelong
+
+' No matter wht I do, I cannot get this to change directions
+
+!definelong urel(tbl,fld,key = "")
+    !if key == "p"
+        'tbl -[up]- fld <<pkey>>
+        fld -- tbl <<pkey>>
+    !else
+        !if key == "f"
+            'tbl -[up]- fld <<fkey>>
+            fld -- tbl <<fkey>>
+        !else
+            'tbl -[up]- fld
+            fld -- tbl
+        !endif
+    !endif
+!enddefinelong
+
+
+database coding_events {
+
+    ' Tables
+    table("event") as Event
+    table("event_category") as Category
+    table("event_details") as Details
+    table("event_tags") as Tags <<Join>>
+    table("tag") as Tag
+    'table(hibernate_sequence) as HS
+
+    ' Fields
+    field("event_id",true) as event.id
+    field("event_name") as event.name
+    field("category_id",true) as category.id
+    field("details_id",true) as details.id
+    field("category_name") as category.name
+    field("contact_email") as details.contactEmail
+    field("description") as details.description
+    field("tag_id",true) as tag.id
+    field("tag_name") as tag.name
+
+    ' Relationships
+    'rel(Event,event.id,"p")
+    Event --- "id" event.id <<pkey>>
+    'rel(Event,event.name)
+    Event --- event.name
+    rel(Event,details.id,"f")
+    rel(Event,category.id,"f")
+
+    tag.id .[hidden] event.id
+    event.id .[hidden] event.name
+    event.name .[hidden] details.id
+    details.id .[hidden] category.id
+
+    'urel(Category,category.id,"p")
+    Category -up- "id" category.id <<pkey>>
+    rel(Category,category.name)
+
+    'urel(Details,details.id,"p")
+    Details -up- "id" details.id <<pkey>>
+    rel(Details,details.contactEmail)
+    rel(Details,details.description)
+
+    /' Tags is a join table, so it does not have keys '/
+    /' rel(Tags,event.id) : "as events_id" '/
+    /' rel(Tags,tag.id) : "as tags_id" '/
+
+    Tags -down- "'events_id'" event.id
+    Tags -down- "'tags_id'" tag.id
+
+    ' urel(Tag,tag.id,"p")
+    Tag -up- "id" tag.id <<pkey>>
+    rel(Tag,tag.name)
+}
+@enduml

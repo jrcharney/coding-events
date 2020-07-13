@@ -42,9 +42,49 @@ Anytime you need to change your SQL tables, it will be easier just to DROP them 
 ```sql
 DROP TABLE IF EXISTS coding_events.hibernate_sequence;
 DROP TABLE IF EXISTS coding_events.event;
+DROP TABLE IF EXISTS coding_events.event_details;
 DROP TABLE IF EXISTS coding_events.event_category;
+DROP TABLE IF EXISTS coding_events.event_tags;
+DROP TABLE IF EXISTS coding_events.tag;
 ```
 
 That should fix things. I'm not happy with the downgrade, but thanks to Bobby Sanders for the fix.
 
 > PSST: Check out the SQL files in the assets folder!
+
+## Database ERD
+
+Here's an **entity relationship diagram** (ERD) of our database.
+
+![coding_events_erd](./assets/coding_events_erd.png)
+
+Each shape represents an entity. Tables are circles. Fields are rectangles. Fields with bold text are fields used as indexes (primary or foreign keys)
+Each line represents a relationship. Green lines are primary keys. Blue lines are foreign keys.
+
+## Application Class Diagram
+
+Using PlantUML can be such a drag sometimes. Thing don't show up in the order you want so paths don't align and you get things in weird places.
+
+There should be other diagrams that show this diagram in parts based on each package.
+
+![coding_events_oop](./assets/coding_events_oop.png)
+
+> Note: Not all the annotations were included in that diagram.
+> I also had to be a little unorthodox and wanted to show what variables the controller functions used as well as what paths were returned in the controllers.
+
+More succinctly, this diagram show the Model-View-Controller (MVC) layout of the application, which honestly should be more <abbr title="Model-Controller-View">MCV</abbr> than <abbr title="Model-View-Controller">MVC</abbr>.
+
+![coding_events_mvc](./assets/coding_events_mvc.png)
+
+Event though Repositories are put into the `data` directory, it is frequently used with the Controllers.
+
+## TODO
+Some Ideas. The ones closer to the bottom more than likely wouldn't fit into this course, but are worth thinking about.
+
+* [ ] Rename `eventCategory` to simply `categories`
+* [x] Make a class diagram of the OOP parts of this project.
+* [x] Make an entity-relationship diagram (ERD) for the database parts of this project.
+* [ ] How would use case diagrams be relevant? (Testing?)
+* [ ] Could this course have benefited from a Gantt chart to better imply the development/producton schedule?
+* [ ] What kind of diagram could we use to describe the relationships between the database and the application? 
+* [ ] If Agile Development is so great, why does it feel like I can't describe in a Software Development Life Cycle (SDLC)?
