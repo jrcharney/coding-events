@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org/">
+<head th:replace="fragments :: head"></head>
+<body class="container">
+<header th:replace="fragments :: header"></header>
+
+<form method="post">
+    <!-- TODO: fields for asking user's first and last name. -->
+    <div class="form-group">
+        <label>
+            Username
+            <input type="text" class="form-control" th:field="${loginFormDTO.username}">
+        </label>
+        <p class="error" th:errors="${loginFormDTO.username}"></p>
+        <p>Dont' have an account? <a th:href="@{/register}">Sign up</a> and get one!</p>
+        <p>Have an account but forgot who you are? <a th:href="@{/whoami}">Let us send you an email!</a></p>
+    </div>
+    <div class="form-group">
+        <label>
+            Password
+            <input type="password" class="form-control" th:field="${loginFormDTO.password}">
+        </label>
+        <p class="error" th:errors="${loginFormDTO.password}"></p>
+        <p>Forgot your password? <a th:href="@{/forgot}">Change it!</a></p><!-- This is why we ask for e-mail addresses! -->
+    </div>
+    <input type="submit" class="btn btn-primary" value="Log In" />
+</form>
+</body>
+</html>

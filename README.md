@@ -78,7 +78,12 @@ More succinctly, this diagram show the Model-View-Controller (MVC) layout of the
 
 Event though Repositories are put into the `data` directory, it is frequently used with the Controllers.
 
-Finally merged many-to-one with the main branch. Welcome!
+At this point we are in chapter 19 and working on the user model.
+
+Add this to your `build.gradle` dependencies.
+```
+implementation 'org.springframework.security:spring-security-crypto'
+```
 
 ## TODO
 Some Ideas. The ones closer to the bottom more than likely wouldn't fit into this course, but are worth thinking about.

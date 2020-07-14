@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org/">
+<head th:replace="fragments :: head"></head>
+<body class="container">
+    <header th:replace="fragments :: header"></header>
+
+    <form method="post">
+        <!-- TODO: fields for asking user's first and last name. -->
+        <div class="form-group">
+            <label>
+                Username
+                <input type="text" class="form-control" th:field="${registerFormDTO.username}">
+            </label>
+            <p class="error" th:errors="${registerFormDTO.username}"></p>
+        </div>
+        <!-- TODO: field for email to send a receipt of signup -->
+        <div class="form-group">
+            <label>
+                Password
+                <input type="password" class="form-control" th:field="${registerFormDTO.password}">
+            </label>
+            <p class="error" th:errors="${registerFormDTO.password}"></p>
+        </div>
+        <div class="form-group">
+            <label>
+                Verify Password
+                <input type="password" class="form-control" th:field="${registerFormDTO.verifyPassword}">
+            </label>
+        </div>
+        <!-- TODO: CAPTCHA! -->
+        <!-- TODO: Checkbox to verify user has read the TOS (which needs a link). -->
+        <!-- TODO: Checkbox to sign soul away. :-P -->
+        <!-- TODO: Once the checkbox(es) are checked, then enable the submit button -->
+        <input type="submit" class="btn btn-primary" value="Register" />
+    </form>
+</body>
+</html>
