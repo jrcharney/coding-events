@@ -1,0 +1,124 @@
+@startuml
+
+title Coding Events : Controllers & Repositories
+
+skinparam monochrome true
+scale 0.75
+
+package data {
+    interface EventRepository<Event,Integer> <<Repository>> extends CRUDRepository {}
+    interface EventCategoryRepository<EventCategory,Integer> <<Repository>> extends CRUDRepository {}
+    interface TagRepository<Tag,Integer> <<Repository>> extends CRUDRepository {}
+    interface UserRepository<User,Integer> <<Repository>> extends CRUDRepository {
+        findByUsername(username : String) : User
+    }
+    note "Repositories are in the data directory" as RepoNote
+}
+
+package controllers {
+    class "@RequestMapping("events")\nEventController" as EventController <<Controller>> {
+        @Autowired eventRepo : EventRepository
+        @Autowired eventCatRepo : EventCategoryRepository
+        @Autowired tagRepo : TagRepository
+
+        +@GetMapping("index") displayAllEvents(@RequestParam(required = false) categoryId : Integer, model : Model) : String
+            {method} \t If categoryId == null
+                {method} \t\t events = eventRepo.findAll()
+            {method} \t Else
+                {method} \t\t If eventCatRepo.findById(categoryId).isEmpty()
+                    {method} \t\t\t title = "Invalid " + categoryId
+                {method} \t\t Else
+                    {method} \t\t\t title = eventCatRepo.findById(categoryId).get().getName() + "events"
+                    {method} \t\t\t events = eventCatRepo.findById(categoryId).get().getEvents()
+            {method} \t return "event/index"
+        +@GetMapping("create") renderCreateEventForm(model : Model) : String
+            {method} \t title = "Create Event"
+            {method} \t events = eventRepo.findAll()
+            {method} \t categories = eventCatRepo.findAll()
+            {method} \t return "events/index"
+        +@PostMapping("create") processCreateEventForm(newEvent : Event, errors : Errors, model : Model) : String
+            {method} \t OnError
+                {method} \t\t title = "Create Tag"
+                {method} \t\t return "events/index"
+            {method} \t Else
+                {method} \t\t return "redirect:"
+        +@GetMapping("details") displayEventDetails(@RequestParam eventId : Integer, model : Model) : String
+            {method} \t OnEmpty
+                {method} \t\t title = "Invalid " + eventId
+            {method} \t Else
+                {method} \t\t title = result.get().getName()
+                {method} \t\t event = result.get()
+            {method} \t return "events/details"
+        +@PostMapping("add-tag") renderAddTagForm(@RequestParam Integer eventId, Model model) : String
+            {method} \t return "events/add-tag"
+        +@GetMapping("add-tag") processAddTagForm(@ModelAttribute @Valid EventTagDTO eventTag, Errors errors, Model model) : String
+                {method} \t\t title = result.get().getName()
+                {method} \t\t tags = tagRepo.findAll()
+                {method} \t\t eventTag = new eventTagDTO(event);
+            {method} \t return "events/add-tag"
+    }
+
+    class "@RequestMapping("categories")\nEventCategoryController" as EventCategoryController <<Controller>> {
+        @Autowired eventCatRepo : EventCategoryRepository
+        +@GetMapping("index") displayAllEventCategories(model : Model) : String
+            {method} \t title = "All Tags"
+            {method} \t categories = eventCatRepo.findAll()
+            {method} \t return "eventCategories/index"
+        +@GetMapping("create") renderCreateEventCategoryForm(model : Model) : String
+            {method} \t title = "Create Tag"
+            {method} \t tags = tagRepo.findAll()
+            {method} \t return "eventCategories/index"
+        +@PostMapping("create") processCreateEventCategoryForm(newCategory : EventCategory, errors : Errors, model : Model) : String
+            {method} \t OnError
+                {method} \t\t title = "Create Tag"
+                {method} \t\t return "eventCategories/index"
+            {method} \t Else
+                {method} \t\t return "redirect:"
+    }
+
+    class "@RequestMapping("tags")\nTagController" as TagController <<Controller>> {
+        @Autowired tagRepo : TagRepository
+        +@GetMapping("index") displayAllTags(model : Model) : String
+            {method} \t title = "All Tags"
+            {method} \t tags  = tagRepo.findAll()
+            {method} \t return "tags/index"
+        +@GetMapping("create") renderCreateTagForm(model : Model) : String
+            {method} \t title = "Create Tag"
+            {method} \t tag   = new Tag()
+            {method} \t return "tags/index"
+        +@PostMapping("create") processCreateTagForm(newTag : Tag, errors : Errors, model : Model) : String
+            {method} \t OnError
+                {method} \t\t title = "Create Tag"
+                {method} \t\t tag   = new Tag()
+                {method} \t\t return "tags/index"
+            {method} \t Else
+                {method} \t\t return "redirect:"
+    }
+
+    class AuthenticationController <<Controller>> {}
+
+    class "HomeController" as HomeController <<Controller>> {
+        + @GetMapping("index") index(model : Model) : String
+            {method} \t title = "Coding Events"
+            {method} \t return "index"
+    }
+}
+
+    note as ControllerNote
+    Controllers communicate with the templates in the resources directory.
+    Controllers are in the controllers directory.
+    Controllers have access to the database?
+    Repositories that are used in controllers are autowired.
+    Just about every method returns a String to a relative path.
+    With exception of the HomeController, every controller has a RequestMapping
+    which is a path relative to the templates directory.
+    Just about every method has a Model argument.
+    endnote
+
+EventRepository <.. EventController  : <<uses>>
+EventCategoryRepository <.. EventController  : <<uses>>
+EventCategoryRepository <.. EventCategoryController  : <<uses>>
+TagRepository <.. TagController : <<uses>>
+TagRepository <.. EventController  : <<uses>>
+UserRepository <.. AuthenticationController : <<uses>>
+@enduml

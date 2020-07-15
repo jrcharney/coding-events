@@ -76,7 +76,11 @@ public class AuthenticationController {
         User existingUser = userRepo.findByUsername(registerFormDTO.getUsername());
 
         if(existingUser != null){
-            errors.rejectValue("username", "username.alreadyexists", "We're sorry. That username already exists. Pick something else and try again.");
+            errors.rejectValue(
+                    "username",
+                    "username.alreadyexists",
+                    "We're sorry. That username already exists. Pick something else and try again."
+            );
             model.addAttribute("title","Register");
             return "register";
         }
@@ -84,7 +88,11 @@ public class AuthenticationController {
         String password = registerFormDTO.getPassword();
         String verifyPassword = registerFormDTO.getVerifyPassword();
         if(!password.equals(verifyPassword)){
-            errors.rejectValue("password","password.mismatch", "Sorry, but your passwords do not match. Try entering them in again.");
+            errors.rejectValue(
+                    "password",
+                    "password.mismatch",
+                    "Sorry, but your passwords do not match. Try entering them in again."
+            );
             model.addAttribute("title","Register");
             return "register";
         }

@@ -1,0 +1,85 @@
+@startuml
+
+title Coding Events : Controllers & Repositories : Imports
+
+scale 0.75
+
+skinparam monochrome true
+
+note as aboutnote
+I couldn't get these things to align right So To another file they will go!
+ #SourGrapes
+endnote
+
+together externalPkgs {
+
+    together RepoPkg {
+        package "org.springframework.data.repository" {
+            interface "CrudRepository<E,ID>" as CrudRepo
+        }
+    }
+
+    together StereotypePkg {
+        package "org.springframework.stereotype" {
+            annotation "Repository" as Repo
+            annotation "Controller" as Ctrlr
+            Repo .[hidden]down. Ctrlr
+        }
+    }
+
+    together ServletPkg {
+        package "javax.servelet.http" {
+            class HttpServeletRequest
+            class HttpServeletResponse
+            class HttpSession
+            HttpServeletRequest .[hidden]down. HttpServeletResponse
+            HttpServeletResponse .[hidden]down. HttpSession
+        }
+    }
+
+    together AnnotationPkg {
+        package "org.springframework.web.bind.annotation" {
+            annotation GetMapping
+            annotation PostMapping
+            annotation RequestMapping
+
+            annotation RequestParam
+            annotation PathVariable
+            annotation ModelAttribute
+        }
+    }
+
+    together NonSpringPkgs {
+        package "java.util" as UtilPkg {
+            class Optional
+        }
+        package "javax.validation" as ValidPkg {
+            annotation Valid
+        }
+        UtilPkg .[hidden]down. ValidPkg
+    }
+
+    together SomeSpringPkgs {
+        package "org.springframework.beans.factory.annotation" as AutoWiredPkg {
+            annotation Autowired
+        }
+        package "org.springframework.validation" as ErrorsPkg {
+            annotation Errors
+        }
+        package "org.springframework.ui" as UiPkg {
+            class Model
+        }
+        AutoWiredPkg .[hidden]down. ErrorsPkg
+        ErrorsPkg .[hidden]down. UiPkg
+    }
+
+    RepoPkg -[hidden]right- SomeSpringPkgs
+    SomeSpringPkgs -[hidden]left- NonSpringPkgs
+    NonSpringPkgs -[hidden]left- AnnotationPkg
+    AnnotationPkg -[hidden]left- ServletPkg
+    ServletPkg -[hidden]left- StereotypePkg
+}
+
+aboutnote .[hidden]down. externalPkgs
+
+@enduml

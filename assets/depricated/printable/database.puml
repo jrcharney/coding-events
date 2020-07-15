@@ -1,0 +1,50 @@
+@startuml
+
+title Coding Events : Database
+
+skinparam monochrome true
+scale 0.75
+
+database coding_events {
+    entity hibernate_sequence {
+        next_val : INTEGER
+    }
+
+    entity event {
+        id : INTEGER
+        name : VARCHAR(50)
+        category_id : INTEGER
+        details_id : INTEGER
+    }
+
+    /' 1..1 '/
+    entity event_details {
+        id : INTEGER
+        contact_email : VARCHAR(255)
+        description  VARCHAR(500)
+    }
+
+    /' 1..* '/
+    entity event_category {
+        id : INTEGER
+        name : VARCHAR(255)
+    }
+
+    /' *..* '/
+    entity tag {
+        id : INTEGER
+        name : VARCHAR(255)
+    }
+
+    entity event_tags {
+        events_id : INTEGER
+        tag_id : INTEGER
+    }
+
+    event -- event_tags
+    event -- event_details
+    event -- event_category
+    event_tags -- tag
+}
+
+@enduml

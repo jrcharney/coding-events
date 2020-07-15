@@ -1,0 +1,193 @@
+@startuml
+
+title Coding Events : Models & DTOs
+
+skinparam monochrome true
+
+scale 0.75
+
+note as modelNote
+Apparently the data directory which contains
+the Repositories was supposed to go here.
+Hopefully Chris will fix that in the future.
+endnote
+
+' TODO: Move this to another file. Don't screw around with alignment! It's futile!
+
+' modelNote .[hidden]. externalPkgs
+
+package "org.launchcode.codingevents" as root {
+
+    note as rootnote
+    See Root for the next level up.
+    endnote
+
+    package model {
+
+        together nondtos {
+
+            abstract class AbstractEntity <<@MappedSuperclass>> {
+                -@Id @GeneratedValue id;
+                {field} \t /* private static int nextId = 1; */
+                {field} \t /* this.id = nextId++; // combo of this.id = nextId and nextId++ */
+                __
+                +getId() : int
+                ..
+                +equals(o : Object) : boolean
+                +hashCode() : int
+            }
+
+            class Event <<@Entity>> extends AbstractEntity {
+                -@NonBlank(message = "...") @Size(min = 3, max = 50, message = "...") name : String
+                -@OneToOne(cascasde = CascadeType.All) @Valid @NotNull details : EventDetails
+                {field} \t <i>/* ONE-TO-ONE relationship. */</i>
+                -@ManyToOne @NotNull(message = "...") category : EventCategory
+                {field} \t <i>/* MANY-TO-ONE relationship. */</i>
+                -@ManyToMany {final} tags : List<tags> = new ArrayList<>();
+                {field} \t <i>/* ONE-TO-ONE relationship. */</i>
+                __
+                +Event()
+                +Event(name : String, description : String, contactEmail : String, category : EventCategory)
+                .. Getters and Setters ..
+                +getName() : String
+                +setName( name : String) : void
+                +getDetails() : EventDetails
+                +setDetails( details : EventDetails) : void
+                +getCategory() : EventCategory
+                +setCategory( category : EventCategory) : void
+                +getTags(tag : Tag) : List<Tag>
+                ..
+                +addTag(tag : Tag) : void
+                +deleteTag(tag : Tag) : void
+                +toString() : String
+            }
+
+            class EventCategory <<@Entity>> extends AbstractEntity {
+                @Size(min = 3, max = 50, message = "...") name : String
+                -@OneToMany(mappedBy = "category") {final} events : List<Event> = new ArrayList<>()
+                {field} \t <i>/* ONE-TO-MANY relationship */</i>
+                __
+                +EventCategory()
+                +EventCategory(@Size(min = 3, message = "...") name : String)
+                .. Getters and Setters ..
+                +getName() : String
+                +setName(name : String) : void
+                +getEvents() : List<Event>
+                ..
+                toString() : String
+            }
+
+            note as edNote
+            Note: If we wanted EventDetails to know of the event that owns it,
+            we would add this Event field to the EventDetails class.
+
+                @OneToOne(mappedBy = "details")
+                private Event event;
+
+            For this project, we don't need it.
+            endnote
+
+            class EventDetails <<@Entity>> extends AbstractEntity {
+                -@Size(max = 500, message = "...") description : String
+                -@NonBlank(message = "...") @Email(message = "...") contactEmail : String
+                __
+                +EventDetails()
+                +EventDetails(@Size(max = 500, message = "...") description : String, @NonBlank(message = "...") contactEmail : String)
+                .. Getters and Setters ..
+                +getDescription() : String
+                +setDescription(description : String) : void
+                +getContactEmail() : String
+                +setContactEmail(contactEmail : String) : void
+            }
+
+            class Tag <<@Entity>> extends AbstractEntity {
+                -@Size(min = 1, max = 50) @NonBlank name : String
+                -@ManyToMany(mappedBy = "tags") {final} events : List<Event> = new ArrayList<>()
+                {field} \t <i>/* MANY-TO-MANY relationship */</i>
+                __
+                +Tag()
+                +Tag(@Size(min = 1, max = 50) @NonBlank name : String)
+                .. Getters and Setters ..
+                +getName() : String
+                +setName(name : String) : void
+                +getEvents() : List<Event>
+                +getDisplayName() : String
+            }
+
+            Event "1" *-down- "1" EventDetails
+            Event "*" *-left- "1" EventCategory
+            Event "*" *-right- "*" Tag
+            Tag -[hidden]up- User
+
+
+            class User <<@Entity>> extends AbstractEntity {
+                -@NotNull username : String
+                -@NotNull pwHash  : String
+                -{static} {final} encoder : BCryptPasswordEncoder = new BCryptPasswordEncoder()
+                __
+                +User()
+                +User(username : String, password : String)
+                .. Getters and Setters ..
+                +getUsername() : String
+                ..
+                +isMatchingPassword(password : String) : boolean
+            }
+
+        }
+
+        package dto {
+
+
+            class EventTagDTO {
+                -@NotNull event : Event
+                -@NotNull tag : Tag
+                __
+                +EventTagDTO()
+                +getEvent() : Event
+                +setEvent(event : Event) : void
+                +getTag() : Tag
+                +setTag(Tag : Tag) : void
+            }
+
+            Event *--- EventTagDTO
+            Tag *--- EventTagDTO
+
+            class LoginFormDTO {
+                /* Note: I'm not listing the messages. See the source code. */
+                -@NotNull @NotBlank @(Size min = 3, max = 30, message =  "...") username : String
+                -@NotNull @NotBlank @(Size min = 5, max = 30, message =  "...") password : String
+                __
+                +getUsername() : String
+                +setUsername(username : String) : void
+                +getPassword() : String
+                +setPassword(password : String) : void
+            }
+
+            class RegisterForm extends LoginFormDTO {
+                -verifyPassword : String
+                __
+                +getVerifyPassword() : String
+                +setVerifyPassword(verifyPassword : String) : void
+            }
+
+            note as dtonote
+            Data Transfer Objects (DTOs) link types of objects together
+            sort of like how SQL uses a join table to link two tables together
+            endnote
+
+        }
+
+        nondtos .[hidden]up.. dto
+
+    }
+
+    rootnote .[hidden]down. model
+
+}
+
+modelNote .[hidden]down. root
+
+
+' externalPkgs ...[hidden]... root
+
+@enduml

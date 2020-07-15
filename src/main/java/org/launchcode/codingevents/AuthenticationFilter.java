@@ -25,10 +25,12 @@ public class AuthenticationFilter extends HandlerInterceptorAdapter {
     @Autowired
     AuthenticationController authController;
 
-    public static final List<String> whitelist = Arrays.asList("/login","/register","/logout","/css"); // TODO: Add /js and /images
+    // TODO: Add /js and /images
+    public static final List<String> whitelist = Arrays.asList("/login","/register","/logout","/css");
 
     private static boolean isWhitelisted(String path){
-        // TODO: Isn't there some lambda expression (similar to JavaScript's Array.prototype.includes() method that could do this?
+        // TODO: Isn't there some lambda expression (similar to JavaScript's Array.prototype.includes()
+        //  method that could do this?
         for(String pathRoot : whitelist){
             if(path.startsWith(pathRoot)){
                 return true;
@@ -38,13 +40,9 @@ public class AuthenticationFilter extends HandlerInterceptorAdapter {
     }
 
     @Override
-    public boolean preHandle(
-            HttpServletRequest req,
-            HttpServletResponse res,
-            Object handler
-    ) throws IOException {
+    public boolean preHandle( HttpServletRequest req, HttpServletResponse res, Object handler ) throws IOException {
         // Don't require sign-in for whitelisted pages
-        if(isWhitelisted((req.getRequestURI()))){
+        if(isWhitelisted(req.getRequestURI())){
             // Returning true indicates that the request may proceed
             return true;
         }

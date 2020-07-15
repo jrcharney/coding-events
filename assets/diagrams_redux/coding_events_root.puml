@@ -1,0 +1,100 @@
+@startuml
+
+title Coding Events : Root Level
+
+skinparam monochrome true
+
+' scale 0.75
+
+together externalPkgs {
+    together row1 {
+    package org.springframework.context.annotation {
+        annotation Bean
+        annotation Configuration
+        Bean .[hidden] Configuration
+    }
+    package org.springframework.web.servelet.config.annotation {
+        interface InterceptorRegistry
+        interface WebMvcConfigurer
+        InterceptorRegistry .[hidden] WebMvcConfigurer
+    }
+    package org.springframework.web.servelet.handler {
+        class HandlerInterceptorAdapter
+    }
+    }
+
+    together row2 {
+    package javax.servelet.http {
+        class HttpServeletRequest
+        class HttpServeletResponse
+        class HttpSession
+        HttpServeletRequest .[hidden] HttpServeletResponse
+        HttpServeletResponse .[hidden] HttpSession
+    }
+    package java.io {
+        class IOException
+    }
+    package java.util {
+        class Arrays
+        class List
+        Arrays .[hidden] List
+    }
+    }
+
+    row2 .[hidden]. row1
+}
+
+package "org.launch_code_codingevents" as root {
+    together rootClasses {
+        class CodingEventsApplication <<@SpringBootApplication>> {
+            {static} +main(args : String[]) : void
+        }
+        class WebApplicationConfig <<@Configuration>> implements WebMvcConfigurer {
+            <i>19.5.3. -> 19.6.2</i>
+            __
+            +@Bean AuthenticationFilter authenticationFilter()
+            {method} \t <i>Create Spring-managed object to allow the app to access our filter</i>
+            +addInterceptors(InterceptorRegistry)
+            {method} \t <i>Register the filter with the Spring container</i>
+        }
+        class AuthenticationFilter extends HandlerInterceptorAdapter {
+            19.5 <i>Where?</i>
+            __
+            @Autowired userRepo : UserRepository
+            @Autowired authController : AuthenticationController
+            ..
+            +{static} {final} whitelist : List<String> = Arrays.list("/login","/register","/logout","/css")
+            __
+            -{static} isWhitelisted(path : String) : boolean
+            ..
+            + preHandle( req : HttpServeletRequest, res : HttpServeletResponse, handler : Object ) : boolean, throws IOException
+            {method} \t Note: HttpSession is used here.
+        }
+    }
+
+    together rootPackages {
+        package data {
+            note as DataNote
+            See Controller & Repos
+            endnote
+        }
+        package controllers {
+            note as ControllersNote
+            See Controller & Repos
+            endnote
+        }
+        package models {
+            note as ModelsNote
+            See Models & DTOs
+            endnote
+        }
+    }
+
+
+    rootClasses .[hidden]down. rootPackages
+
+}
+
+externalPkgs .[hidden]up. root
+
+@enduml

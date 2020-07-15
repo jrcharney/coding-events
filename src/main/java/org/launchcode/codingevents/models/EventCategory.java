@@ -18,7 +18,7 @@ public class EventCategory extends AbstractEntity {
 
     public EventCategory() { }
 
-    public EventCategory(@Size(min = 3, message = "Name must be at least characters.") String name) { this.name = name; }
+    public EventCategory(@Size(min = 3, message = "Name must be at least characters.") String name){ this.name = name; }
 
     public String getName() { return name; }
 

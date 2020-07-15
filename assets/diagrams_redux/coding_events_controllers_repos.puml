@@ -1,0 +1,284 @@
+@startuml
+
+title Coding Events : Controllers & Repos
+
+skinparam monochrome true
+
+scale 0.75
+
+together externalPkgs {
+
+    note as importnote
+    I have had just about enough with trying to FORCE
+    things to be aligned in this diagram.
+    Therefore, the external packages, except for CrudRepository
+    have been moved to another file!
+    Time is of the essence!
+    endnote
+
+    package "org.springframework.data.repository" as RepoPkg {
+        interface "CrudRepository<E,ID>" as CrudRepo
+    }
+}
+
+package "org.launchcode.codingevents" as root {
+
+    note as rootnote
+    See Root for the next level up.
+    endnote
+
+    package data {
+        interface "EventRepository" as EventRepo <<@Repository>>
+        interface "EventCategoryRepository" as EventCatRepo <<@Repository>>
+        interface "TagRepository" as TagRepo <<@Repository>>
+        interface "UserRepository" as UserRepo <<@Repository>> {
+            findByUsername(username : String) : User
+        }
+        note as datanote
+        Repositories are sometimes called DAOs (Data Access Objects)
+        endnote
+
+        ' Align Repositories
+        'datanote .[hidden] EventRepo
+        EventCatRepo .[hidden]left. EventRepo
+        EventRepo .[hidden]left. TagRepo
+        TagRepo .[hidden]left. UserRepo
+    }
+
+    package controllers {
+        class "HomeController" as HomeCtrlr <<@Controller>> {
+            +@GetMapping index(model : Model) : String
+            {method} \t title = "Coding Events"
+            {method} \t return "index"
+        }
+
+        class "EventController" as EventCtrlr <<@Controller>> {
+            -@Autowired eventRepo : EventRepository
+            -@Autowired eventCatRepo : EventCategoryRepository
+            -@Autowired tagRepo :  TagRepository
+            __
+            +@GetMapping displayAllEvents(@RequestParam(required = false) categoryId : Integer, model : Model) : String
+            {method} \t if(categoryId == null)
+            {method} \t\t title = "All Events"
+            {method} \t\t events = eventRepo.findAll()
+            {method} \t else
+            {method} \t\t if(eventCatRepo.findById(categoryId).isEmpty())
+            {method} \t\t\t title = "Invalid category ID" + categoryId
+            {method} \t\t else
+            {method} \t\t\t title = eventCatRepo.findById(categoryId).get().getName()
+            {method} \t\t\t events = eventCatRepo.findById(categoryId).get().getEvents()
+            return "events/index"
+
+            +@GetMapping("create") renderCreateEventForm(model : Model) : String
+            {method} \t title = "Create Event"
+            {method} \t event = new Event()
+            {method} \t return "events/create"
+
+            +@PostMapping("create") processCreateEventForm(@ModelAttribute @Valid newEvent : Event, errors : Errors, model : Model) : String
+            {method} \t if(errors.hasErrors())
+            {method} \t\t title = "Create Event"
+            {method} \t\t return "events/create"
+            {method} \t return "redirect:"
+
+            +@GetMapping("details") displayEventDetails(@RequestParam eventId : Integer, model : Model) : String
+            {method} \t if(eventRepo.findById(eventId).isEmpty())
+            {method} \t\t title = "Invalid Event Id: " + eventId
+            {method} \t else
+            {method} \t\t title = "Details for " + eventRepo.findById(eventId).get().getName()
+            {method} \t\t event = eventRepo.findById(eventId).get()
+            {method} \t\t tags = eventRepo.findById(eventId).get().getTags()
+            {method} \t return "events/details"
+
+            +@GetMapping("all-tag") processAddTagForm(@ModelAttribute @Valid eventTag : EventTagDTO, errors Errors, model : Model) : String
+            {method} \t if(!errors.hasErrors())
+            {method} \t\t return "redirect:details?eventId=" + eventTag.getEvent().getId()
+            {method} \t return "redirect:add-tag"
+
+            .. Under Construction ..
+            +@GetMapping("edit/{eventId}") renderEditEventsForm( model : Model, @PathVariable eventId : int ) : String
+            {method} \t /* Still need to work on this */
+            {method} \t return "events/edit"
+
+            +@PostMapping("edit") processEditEventsForm( model : Model) : String
+            {method} \t /* TODO: Make sure this has the right arguments */
+            {method} \t /* Still need to work on this */
+            {method} \t return "redirect:"
+
+            +@GetMapping("delete") renderDeleteEventsForm(model : Model) : String
+            {method} \t title = "Delete Events"
+            {method} \t events = eventRepo.findAll()
+            {method} \t return "events/delete"
+
+            +@PostMapping("delete") processDeleteEventsForm(@RequestParam(required = false) eventIds int[]) : String
+            {method} \t return "redirect:";
+        }
+
+        class "EventCategoryController" as EventCatCtrlr <<@Controller>> {
+            -@Autowired EventCategoryRepository eventCatRepo
+            __
+            +@GetMapping displayAllEventCategories(model : Model) : String
+            {method} \t title = "All Categories"
+            {method} \t categories = eventCatRepo.findAll()
+            {method} \t return "eventCategories/index"
+
+            +@GetMapping("create") renderCreateEventCategoryForm(model : Model) : String
+            {method} \t title = "Create Category"
+            {method} \t category = new EventCategory()
+            {method} \t return "eventCategories/create"
+
+            +@PostMapping("create") processCreateEventCategoryForm(@ModelAttribute @Valid newEventCat : EventCategory, errors : Errors, model : Model) : String
+            {method} \t if (errors.hasErrors())
+            {method} \t\t title = "Create Category"
+            {method} \t\t return "eventCategories/create"
+            {method} \t return "redirect:"
+
+            .. Under Construction ..
+            +@GetMapping("edit/{categoryId}") renderEditEventCategoryForm( model : Model, @PathVariable categoryId : int ) : String
+            {method} \t /* Still need to work on this */
+            {method} \t return "eventCategories/edit"
+
+            +@PostMapping("edit") processEditEventCategoryForm(model : Model) : String
+            {method} \t /* TODO: Make sure this has the right arguments */
+            {method} \t /* Still need to work on this */
+            {method} \t return "redirect:"
+
+            +@GetMapping("delete") renderDeleteEventCategoriesForm(model : Model) : String
+            {method} \t title = "Delete Categories"
+            {method} \t categories = eventCatRepo.findAll()
+            {method} \t return "eventCategories/delete"
+
+            +@PostMapping("delete") processDeleteEventCategoriesForm(@RequestParam(required = false) categoryIds int[]) : String
+            {method} \t return "redirect:";
+        }
+
+        class "TagController" as TagCtrlr <<@Controller>> {
+            -@Autowired TagRepository tagRepo
+            __
+            +@GetMapping displayAllTags(model : Model) : String
+            {method} \t title = "All Tags"
+            {method} \t tags = tagRepo.findAll()
+            {method} \t return "tags/index"
+
+            +@GetMapping("create") renderCreateTagForm(model : Model) : String
+            {method} \t title = "Create Tag"
+            {method} \t category = new Tag()
+            {method} \t return "tags/create"
+
+            +@PostMapping("create") processCreateTagForm(@ModelAttribute @Valid newTag : EventCategory, errors : Errors, model : Model) : String
+            {method} \t if (errors.hasErrors())
+            {method} \t\t title = "Create Tag"
+            {method} \t\t return "tags/create"
+            {method} \t return "redirect:"
+
+            .. Under Construction ..
+            +@GetMapping("edit/{categoryId}") renderEditTagForm( model : Model, @PathVariable tagId : int ) : String
+            {method} \t /* Still need to work on this */
+            {method} \t return "tags/edit"
+
+            +@PostMapping("edit") processEditTagForm(model : Model) : String
+            {method} \t /* TODO: Make sure this has the right arguments */
+            {method} \t /* Still need to work on this */
+            {method} \t return "redirect:"
+
+            +@GetMapping("delete") renderDeleteTagsForm(model : Model) : String
+            {method} \t title = "Delete Tags"
+            {method} \t tags = tagRepo.findAll()
+            {method} \t return "tags/delete"
+
+            +@PostMapping("delete") processDeleteTagsForm(@RequestParam(required = false) tagIds int[]) : String
+            {method} \t return "redirect:";
+        }
+
+        /' What number was this one? '/
+        class "AuthenticationController" as AuthCtrlr <<@Controller>> {
+            @Autowired userRepo : UserRepository
+            {static} {final} -userSessionKey : String = "user"
+            __
+            +getUserFromSession(session : HttpSession) : User
+            {static} -setUserInSession(session : HttpSession, user : User) : void
+            ..
+            +@GetMapping("/register") renderRegistrationForm(model : Model) : String
+            {method} \t new RegisterFormDTO()
+            {method} \t title = "Register"
+            {method} \t return "register"
+
+
+            +@PostMapping("/register") processRegistrationForm(@ModelAttribute @Valid registerFormDTO : RegisterFormDTO, errors, req HttpServeletRequest, model : Model) : String
+            {method} \t if(errors.hasErrors())
+            {method} \t\t title = "Register"
+            {method} \t\t return "register"
+            {method} \t if(userRepo.findByUsername(registerFormDTO().getUsername()) != null)
+            {method} \t\t title = "Register"
+            {method} \t\t return "register"
+            {method} \t if(!registerFormDTO.getPassword().equals(registerFormDTO.getVerifyPassword()))
+            {method} \t\t title = "Register"
+            {method} \t\t return "register"
+            {method} \t /* Create a new User */
+            {method} \t /* Establish a new session */
+            {method} \t return "redirect:"
+
+            +@GetMapping("/login") renderLoginForm(model : Model) : String
+            {method} \t new LoginFormDTO()
+            {method} \t title = "Log In"
+            {method} \t return "login"
+
+            +@PostMapping("/login") processLoginForm(@ModelAttribute @Valid loginFormDTO : LoginFormDTO, errors : Errors, req HttpServeletRequest, model : Model) : String
+            {method} \t if(errors.hasErrors())
+            {method} \t\t title = "Log In"
+            {method} \t\t return "login"
+            {method} \t if(userRepo.findByUsername(loginFormDTO().getUsername()) == null)
+            {method} \t\t title = "Log In"
+            {method} \t\t return "login"
+            {method} \t /* Login exiting User */
+            {method} \t /* Establish a new session */
+            {method} \t title = "Log In"
+            {method} \t return "login"
+
+            +@GetMapping("/logout") logout(req : HttpServeletRequest) : String
+            <i>19.4.6.</i>
+            <i>Invalidates the session</i>
+            {method} \t "redirect:/login"
+            __
+            .. Wish List ..
+            Email Validation
+            Hint Storage
+            CAPTCHA
+        }
+    }
+
+    ' Upper pointer-- Lower
+    rootnote .[hidden]. data
+    ' RepoPkg .[hidden]down. data
+    data .[hidden]down. controllers
+
+    ' Repos to controllers
+    EventRepo *-down- EventCtrlr
+    EventCatRepo *-down- EventCtrlr
+    TagRepo *-down- EventCtrlr
+    EventCatRepo *-down- EventCatCtrlr
+    TagRepo *-down- TagCtrlr
+    UserRepo *-down- AuthCtrlr
+
+    ' Align Controllers
+    /' Ideal plan (wide!) '/
+    'HomeCtrlr .[hidden]right. EventCatCtrlr
+    'EventCatCtrlr .[hidden]left. EventCtrlr
+    'EventCtrlr .[hidden]left. TagCtrlr
+    'TagCtrlr .[hidden]left. AuthCtrlr
+
+    /' This way to make it printable up to 50% of the page '/
+    HomeCtrlr .[hidden]down. EventCatCtrlr
+    EventCatCtrlr .[hidden]up. EventCtrlr
+    EventCtrlr .[hidden]down. TagCtrlr
+    TagCtrlr .[hidden]up. AuthCtrlr
+}
+
+' If it keeps rolling off to the side, make the arrow longer!
+externalPkgs .[hidden]down. root
+'root .[hidden]down. externalPkgs
+CrudRepo <|-down- EventRepo : "CrudRepository<Event,Integer>"
+CrudRepo <|-down- EventCatRepo : "CrudRepository<EventCategory,Integer>"
+CrudRepo <|-down- TagRepo : "CrudRepository<Tag,Integer>"
+CrudRepo <|-down- UserRepo : "CrudRepository<User,Integer>"
+
+@enduml

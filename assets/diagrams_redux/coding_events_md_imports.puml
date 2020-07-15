@@ -1,0 +1,50 @@
+@startuml
+
+title Coding Events : Models & DTOs : Imports
+
+skinparam monochrome true
+
+scale 0.75
+
+together externalPkgs {
+
+    package org.springframework.security.crypto.bcrypt {
+        class BCryptPasswordEncoder
+    }
+
+    package javax.persistence {
+        annotation CascadeType
+        annotation Entity
+        annotation GeneratedValue
+        annotation Id
+        annotation MappedSuperclass
+        annotation ManyToMany
+        annotation ManyToOne
+        annotation OneToMany
+        annotation OneToOne
+    }
+
+    package javax.validation {
+        annotation Valid
+    }
+
+    package javax.validation.constraints {
+        annotation Email
+        annotation NotBlank
+        annotation NotNull
+        annotation Size
+    }
+
+    package java.util {
+        class ArrayList
+        class List
+        class Objects
+
+        note as junote
+        TODO: I wish we could incorporate more HashMaps and Maps
+        endnote
+
+    }
+}
+
+@enduml

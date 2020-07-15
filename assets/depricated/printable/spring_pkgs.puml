@@ -1,0 +1,39 @@
+@startuml
+
+title Spring Framework : Some classes
+
+skinparam monochrome true
+scale 0.75
+
+' Repositories are in the data directory
+package "org.springframework.data.repository" as RepoPkg {
+    interface Repository <T,ID>
+    interface CRUDRepository <T,ID> extends Repository {
+        count() : long
+        delete(entity : T) : void
+        deleteAll() : void
+        deleteAll(entities : Iterable<? extends T>) : void
+        deleteById(id : ID) : void
+        exitsById(id : ID) : boolean
+        findAll() : Iterable<T>
+        findAllByID(ids : Iterable<ID>) : Iterable<T>
+        findById(id : ID) : Optional<T>
+        save(entity : S) : <S extends T> S
+        saveAll(entities Iterable< S >) : <S extends T> Iterable< S >
+    }
+}
+
+package "org.springframework.ui" as ModelPkg {
+    interface Model {
+        addAllAttributes(attributeValues : Collection<?>) : Model
+        addAllAttributes(attributes : Map<String,?>) : Model
+        addAttribute(attribute : Object) : Model
+        addAttribute(attributeName : String, AttributeValue : Object) : Model
+        asMap() : Map<String,Object>
+        containsAttribute(attributeName : String) : boolean
+        getAttribute(attributeName : String) : Object
+        mergeAttributes(attributes : Map<String,?>) : Model
+    }
+}
+
+@enduml

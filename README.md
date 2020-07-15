@@ -67,7 +67,7 @@ Using PlantUML can be such a drag sometimes. Thing don't show up in the order yo
 
 There should be other diagrams that show this diagram in parts based on each package.
 
-![coding_events_oop](./assets/coding_events_oop.png)
+![coding_events_oop](assets/depricated/coding_events_oop.png)
 
 > Note: Not all the annotations were included in that diagram.
 > I also had to be a little unorthodox and wanted to show what variables the controller functions used as well as what paths were returned in the controllers.

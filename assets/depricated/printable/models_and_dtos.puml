@@ -1,0 +1,122 @@
+@startuml
+
+title Coding Events : Models & DTOs
+
+skinparam monochrome true
+scale 0.75
+
+note as ModelNote
+Almost every class is represented by a table in the corresponding database.
+Just about every class in the models package is an @Entity.
+Abstract classes that represent Entity classes should be a @MappedSuperClass.
+endnote
+
+' Entities are in the models directory
+package models {
+    package "dto" as dtos {
+
+        note as DTONote
+        Just as SQL has join tables to connect records from
+        two different tables by their ids in another table,
+        Data Transfer Objects (DTOs) are used to connect
+        two objects of different types with another object.
+        DTOs should be put in their own package inside the
+        models directory.
+        It appears they are not entities like the objects
+        linked by them.
+        endnote
+
+        class EventTagDTO {
+            -event : Event
+            -tag : Tag
+            __
+            EventTagDTO()
+            ..Setters and Getters..
+            +getEvent() : Event
+            +setEvent(event : Event) : void
+            +getTag() : Tag
+            +setTag(tag : Tag) : void
+        }
+
+        class LoginFormDTO {
+
+        }
+
+        class RegisterDTO {}
+    }
+
+    abstract class AbstractEntity <<MappedSuperClass>> {
+        -id : int
+        +getId() : int
+        +equals(o : Object) : boolean
+        +hashcode() : int
+    }
+    class Event <<Entity>> extends AbstractEntity {
+        -name : String
+        -details : EventDetails /' OneToOne '/
+        -category : EventCategory /' OneToMany '/
+        -tags : List<Tag> /' {final} '/
+        __
+        +Event()
+        +Event(name : String, details : String, contactEmail : String, category : EventCategory)
+        .. Getters and Setters ..
+        +getName() : String
+        +setName(name : String) : void
+        +getDetails() : EventDetails
+        +setDetails(details : EventDetails) : void
+        +getCategory() : EventCategory
+        +setCategory(category : EventCategory) : void
+        +getTags() : List<Tag>
+        +setTag(tag : Tag) : void
+        ..
+        +addTag(tag : Tag) : void
+        +deleteTag(tag Tag) void
+        +toString() : String
+    }
+    class EventDetails <<Entity>> extends AbstractEntity {
+        -description : String
+        -contactEmail : String
+        __
+        EventDetails()
+        EventDetails(description : String, contactEmail : String)
+        .. Getters and Setters ..
+        +getDescription() : String
+        +setDescription(description : String) : void
+        +getContactEmail() : String
+        +setContacEmail(contactEmail : String) : void
+    }
+    class EventCategory <<Entity>> extends AbstractEntity {
+        -name : String
+        -events : List<Event>   /' {final}, OneToMany(mappedBy="category") '/
+        __
+        EventCategory()
+        EventCategory(name : String)
+        ..Getters and Setters..
+        +getName() : String
+        +setName(name : String) : void
+        +getEvents() : List<Event>
+        ..
+        toString() : String
+    }
+    class Tag <<Entity>> extends AbstractEntity {
+        -name : String
+        -events : List<Event> /' {final}, ManyToMany(mappedBy="tags") '/
+        __
+        Tag()
+        Tag(name : String)
+        ..Getters and Setters..
+        +getName() : String
+        +setName(name : String) : void
+        +getEvents() : List<Event>
+        +getDisplayName() : String
+    }
+
+'    Tag .[hidden]. ModelNote
+    Event <-- EventTagDTO
+    Tag <-- EventTagDTO
+}
+
+ModelNote .[hidden]down. models
+
+
+@enduml

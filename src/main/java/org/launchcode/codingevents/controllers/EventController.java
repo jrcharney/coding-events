@@ -41,7 +41,8 @@ public class EventController {
         } else {
             Optional<EventCategory> result = eventCatRepo.findById(categoryId);
             // What if we wanted to find more than one?
-            // Optional<List<EventCategory>> results = eventCatRepo.findAllById(categoryId); probably? but categoryId would need to be a list of ids.
+            // Optional<List<EventCategory>> results = eventCatRepo.findAllById(categoryId);
+            //      probably? but categoryId would need to be a list of ids.
             // Note: result.isPresent() is the same as !result.isEmpty()
             if(result.isEmpty()){
                 model.addAttribute("title","Invalid category ID: " + categoryId);
@@ -59,7 +60,7 @@ public class EventController {
     @GetMapping("create")
     public String renderCreateEventForm(Model model){
         model.addAttribute("title","Create Event");
-        model.addAttribute(new Event());                                    // basically model.addAttribute("event",new Event());
+        model.addAttribute(new Event());        // basically model.addAttribute("event",new Event());
         model.addAttribute("categories",eventCatRepo.findAll());
         //model.addAttribute("types",EventType.values());
         return "events/create";
