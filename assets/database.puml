@@ -7,11 +7,11 @@ scale 0.75
 
 database coding_events {
     entity hibernate_sequence {
-        next_val : INTEGER
+        next_val : BIGINT PRIMARY KEY AUTO_INCREMENT
     }
 
     entity event {
-        id : INTEGER
+        id : INTEGER PRIMARY KEY AUTO_INCREMENT
         name : VARCHAR(50)
         category_id : INTEGER
         details_id : INTEGER
@@ -19,21 +19,21 @@ database coding_events {
 
     /' 1..1 '/
     entity event_details {
-        id : INTEGER
+        id : INTEGER PRIMARY KEY AUTO_INCREMENT
         contact_email : VARCHAR(255)
         description  VARCHAR(500)
     }
 
     /' 1..* '/
     entity event_category {
-        id : INTEGER
+        id : INTEGER PRIMARY KEY AUTO_INCREMENT
         name : VARCHAR(255)
     }
 
     /' *..* '/
     entity tag {
-        id : INTEGER
-        name : VARCHAR(255)
+        id : INTEGER PRIMARY KEY AUTO_INCREMENT
+        name : VARCHAR(50)
     }
 
     entity event_tags {
@@ -41,10 +41,16 @@ database coding_events {
         tag_id : INTEGER
     }
 
-    event -- event_tags
-    event -- event_details
-    event -- event_category
-    event_tags -- tag
+    entity user {
+        id : INTEGER PRIMARY KEY AUTO_INCREMENT
+        pw_hash : VARCHAR(255)
+        username : VARCHAR(255)
+    }
+
+    event "1" --{ "*" event_tags
+    event "1" -- "1" event_details
+    event "1" --{ "*" event_category
+    event_tags "*" }-- "1" tag
 }
 
 @enduml

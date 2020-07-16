@@ -1,11 +1,15 @@
 @startuml
 
+title Coding Events : Database : Entity-Relationships
+
 hide stereotype
 
 skinparam {
     ArrowColor<<pkey>> green
     ArrowColor<<fkey>> blue
+    UseCaseBackgroundColor none
     UseCaseBackgroundColor<<Join>> #ffdddd
+    rectangleBackgroundColor none
 }
 
 ' NOTE: The new syntax has not been implemented yet.
@@ -54,14 +58,21 @@ skinparam {
 database coding_events {
 
     ' Tables
+    table("user") as User
+
     table("event") as Event
     table("event_category") as Category
     table("event_details") as Details
     table("event_tags") as Tags <<Join>>
     table("tag") as Tag
-    'table(hibernate_sequence) as HS
+
+    table(hibernate_sequence) as HS
 
     ' Fields
+    field("user_id",true) as user.id
+    field("pw_hash") as user.pw
+    field("username") as user.un
+
     field("event_id",true) as event.id
     field("event_name") as event.name
     field("category_id",true) as category.id
@@ -72,7 +83,13 @@ database coding_events {
     field("tag_id",true) as tag.id
     field("tag_name") as tag.name
 
+    field("next_val",true) as hs.id
+
     ' Relationships
+    User -down-- "id" user.id <<pkey>>
+    User -down-- user.pw
+    User -down-- user.un
+
     'rel(Event,event.id,"p")
     Event --- "id" event.id <<pkey>>
     'rel(Event,event.name)
@@ -98,11 +115,14 @@ database coding_events {
     /' rel(Tags,event.id) : "as events_id" '/
     /' rel(Tags,tag.id) : "as tags_id" '/
 
-    Tags -down- "'events_id'" event.id
-    Tags -down- "'tags_id'" tag.id
+    Tags -down- "events_id" event.id
+    Tags -down- "tags_id" tag.id
 
     ' urel(Tag,tag.id,"p")
     Tag -up- "id" tag.id <<pkey>>
     rel(Tag,tag.name)
+
+    HS -down-- hs.id <<pkey>>
+
 }
 @enduml
