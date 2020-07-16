@@ -40,7 +40,7 @@ public class TagController {
         if(errors.hasErrors()){
             model.addAttribute("title", "Create Tag");
             //model.addAttribute(new Tag());        // TODO: Watch this line. Compare it with other controllers.
-            model.addAttribute("tag",new Tag());
+            //model.addAttribute("tag",new Tag()); // This should not have happened!
             return "tags/create";
         }
         tagRepo.save(newTag);

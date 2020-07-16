@@ -47,9 +47,6 @@ public class EventCategoryController {
         if (errors.hasErrors()) {
             // GO back to the create for, but add an error message.
             model.addAttribute("title", "Create Category");
-            //model.addAttribute(new EventCategory());        // This line should fix a lot of things!
-            // TODO: Should the next line be rewritten? Why doesn't it use newEventCat?
-            model.addAttribute("category",new EventCategory());    // This line should fix a lot of things!
             return "eventCategories/create";
         }
         eventCatRepo.save(newEventCat);
